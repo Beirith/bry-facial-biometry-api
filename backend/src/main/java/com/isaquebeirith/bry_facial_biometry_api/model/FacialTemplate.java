@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "facial_template")
+@Table(name = "facial_templates")
 public class FacialTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
