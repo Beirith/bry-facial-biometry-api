@@ -22,12 +22,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findByUserId(Long userId) {
-        return userRepository.findById(userId);
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("Não há nenhum usuário cadastrado com o ID " + id));
     }
 
-    public Optional<User> findByCpf(String cpf) {
-        return userRepository.findByCpf(cpf);
+    public User findByCpf(String cpf) {
+        return userRepository.findByCpf(cpf).orElseThrow(
+                () -> new UserNotFoundException("Não há nenhum usuário cadastrado com o CPF " + cpf));
     }
 
     @Transactional
@@ -44,9 +46,5 @@ public class UserService {
         facialTemplateService.createFacialTemplate(newUser);
 
         return newUser;
-    }
-
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
     }
 }

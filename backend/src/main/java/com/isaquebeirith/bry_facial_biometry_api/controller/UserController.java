@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,6 +19,33 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> findAll() {
+        List<User> users = userService.findAll();
+
+        List<UserResponseDTO> response = users.stream().map(UserResponseDTO::fromEntity).toList();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
+        User user = userService.findById(id);
+
+        UserResponseDTO response = UserResponseDTO.fromEntity(user);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(params = "cpf")
+    public ResponseEntity<UserResponseDTO> findByCpf(@RequestParam String cpf) {
+        User user = userService.findByCpf(cpf);
+
+        UserResponseDTO response = UserResponseDTO.fromEntity(user);
+
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<UserResponseDTO> create(@Valid UserRequestDTO request) throws IOException {
@@ -28,10 +56,7 @@ public class UserController {
 
         User result = userService.create(user);
 
-        UserResponseDTO response = new UserResponseDTO();
-        response.setId(result.getId());
-        response.setName(result.getName());
-        response.setCpf(result.getCpf());
+        UserResponseDTO response = UserResponseDTO.fromEntity(result);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
