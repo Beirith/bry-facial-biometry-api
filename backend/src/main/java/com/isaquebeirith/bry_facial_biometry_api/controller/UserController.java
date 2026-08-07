@@ -61,4 +61,23 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PutMapping(value = "/{id}", consumes = "multipar/form-data")
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) throws IOException {
+        String newName = request.getName();
+        byte[] newPicture =  request.getPicture().getBytes();
+
+        User updatedUser = userService.update(id, newName, newPicture);
+
+        UserResponseDTO response = UserResponseDTO.fromEntity(updatedUser);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        userService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
