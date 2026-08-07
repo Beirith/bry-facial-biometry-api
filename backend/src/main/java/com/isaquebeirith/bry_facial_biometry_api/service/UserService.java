@@ -2,21 +2,23 @@ package com.isaquebeirith.bry_facial_biometry_api.service;
 
 import com.isaquebeirith.bry_facial_biometry_api.exception.DuplicateCpfException;
 import com.isaquebeirith.bry_facial_biometry_api.exception.InvalidPictureException;
+import com.isaquebeirith.bry_facial_biometry_api.exception.InvalidUpdateException;
 import com.isaquebeirith.bry_facial_biometry_api.exception.UserNotFoundException;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
+import com.isaquebeirith.bry_facial_biometry_api.repository.FacialTemplateRepository;
 import com.isaquebeirith.bry_facial_biometry_api.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final FacialTemplateService facialTemplateService;
+    private final FacialTemplateRepository facialTemplateRepository;
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -46,5 +48,36 @@ public class UserService {
         facialTemplateService.createFacialTemplate(newUser);
 
         return newUser;
+    }
+
+    @Transactional
+    public User update(Long id, String name, byte[] picture) {
+        User user = findById(id);
+
+        boolean validName = (name != null && !name.isBlank());
+        boolean validPicture = (picture != null && picture.length > 0);
+        boolean atLeastOneFieldValid = validName || validPicture;
+
+        if (!atLeastOneFieldValid) {
+            throw new InvalidUpdateException("Informe pelo menos um campo para atualizar.");
+        }
+
+        if (validName) {
+            user.setName(name);
+        }
+
+        if (validPicture) {
+            user.setPicture(picture);
+            facialTemplateService.createFacialTemplate(user);
+        }
+
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        User user = findById(id);
+
+        userRepository.delete(user);
     }
 }
