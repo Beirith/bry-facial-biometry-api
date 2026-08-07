@@ -39,6 +39,11 @@ public class AppExceptionHandler {
         return generateResponseEntity(HttpStatus.BAD_REQUEST, errorsMessages);
     }
 
+    @ExceptionHandler(InvalidUpdateException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidUpdate(InvalidUpdateException e) {
+        return generateResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("status", status.value());
