@@ -1,7 +1,8 @@
 package com.isaquebeirith.bry_facial_biometry_api.controller;
 
-import com.isaquebeirith.bry_facial_biometry_api.dto.UserRequestDTO;
+import com.isaquebeirith.bry_facial_biometry_api.dto.UserCreateDTO;
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserResponseDTO;
+import com.isaquebeirith.bry_facial_biometry_api.dto.UserUpdateDTO;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
 import com.isaquebeirith.bry_facial_biometry_api.service.UserService;
 import jakarta.validation.Valid;
@@ -48,13 +49,13 @@ public class UserController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<UserResponseDTO> create(@Valid UserRequestDTO request) throws IOException {
-        User user = new User();
-        user.setName(request.getName());
-        user.setCpf(request.getCpf());
-        user.setPicture(request.getPicture().getBytes());
+    public ResponseEntity<UserResponseDTO> create(@Valid UserCreateDTO request) throws IOException {
+        User newUser = new User();
+        newUser.setName(request.getName());
+        newUser.setCpf(request.getCpf());
+        newUser.setPicture(request.getPicture().getBytes());
 
-        User result = userService.create(user);
+        User result = userService.create(newUser);
 
         UserResponseDTO response = UserResponseDTO.fromEntity(result);
 

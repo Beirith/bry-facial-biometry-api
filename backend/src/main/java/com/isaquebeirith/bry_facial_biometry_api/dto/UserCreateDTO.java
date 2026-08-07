@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class UserRequestDTO {
+public class UserCreateDTO {
     @NotBlank(message = "É obrigatório informar o nome do usuário.")
     private String name;
 
