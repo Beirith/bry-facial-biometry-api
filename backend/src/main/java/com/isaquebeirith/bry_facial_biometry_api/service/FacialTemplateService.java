@@ -3,6 +3,7 @@ package com.isaquebeirith.bry_facial_biometry_api.service;
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
 import com.isaquebeirith.bry_facial_biometry_api.biometry.generation.FacialTemplateGenerator;
+import com.isaquebeirith.bry_facial_biometry_api.exception.FeatureVectorGenerationException;
 import com.isaquebeirith.bry_facial_biometry_api.model.FacialTemplate;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
 import com.isaquebeirith.bry_facial_biometry_api.repository.FacialTemplateRepository;
@@ -10,6 +11,8 @@ import com.isaquebeirith.bry_facial_biometry_api.util.FeatureVectorConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
 
@@ -19,7 +22,7 @@ public class FacialTemplateService {
     private final FacialTemplateRepository facialTemplateRepository;
     private final FacialTemplateGenerator facialTemplateGenerator;
 
-    public void createFacialTemplate(User user) throws Exception {
+    public void createFacialTemplate(User user)  {
         FacialTemplate newFacialTemplate = new FacialTemplate();
         newFacialTemplate.setUser(user);
 
@@ -30,7 +33,7 @@ public class FacialTemplateService {
         facialTemplateRepository.save(newFacialTemplate);
     }
 
-    public void updateFacialTemplate(User user) throws Exception {
+    public void updateFacialTemplate(User user)  {
         Optional<FacialTemplate> oldFacialTemplate = facialTemplateRepository.findByUserId(user.getId());
 
         if (oldFacialTemplate.isPresent()) {
@@ -43,10 +46,16 @@ public class FacialTemplateService {
         }
     }
 
-    private byte[] generateFeatureVector(User user) throws Exception {
+    private byte[] generateFeatureVector(User user)  {
         byte[] pictureBytes = user.getPicture();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
-        Image image = ImageFactory.getInstance().fromInputStream(inputStream);
+
+        Image image;
+        try {
+            image = ImageFactory.getInstance().fromInputStream(inputStream);
+        } catch (Exception e) {
+            throw new FeatureVectorGenerationException("Erro ao gerar vetor de características a partir da foto.");
+        }
 
         float[] floatVector = facialTemplateGenerator.generate(image);
 

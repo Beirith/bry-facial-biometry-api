@@ -3,6 +3,7 @@ package com.isaquebeirith.bry_facial_biometry_api.controller;
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserCreateDTO;
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserResponseDTO;
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserUpdateDTO;
+import com.isaquebeirith.bry_facial_biometry_api.exception.PictureReadException;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
 import com.isaquebeirith.bry_facial_biometry_api.service.UserService;
 import jakarta.validation.Valid;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -48,11 +48,16 @@ public class UserController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<UserResponseDTO> create(@Valid UserCreateDTO request) throws Exception {
+    public ResponseEntity<UserResponseDTO> create(@Valid UserCreateDTO request)  {
         User newUser = new User();
         newUser.setName(request.getName());
         newUser.setCpf(request.getCpf());
-        newUser.setPicture(request.getPicture().getBytes());
+
+        try {
+            newUser.setPicture(request.getPicture().getBytes());
+        } catch (Exception e) {
+            throw new PictureReadException("Erro ao ler o arquivo de imagem do usuário.");
+        }
 
         User result = userService.create(newUser);
 
@@ -62,11 +67,17 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) throws Exception {
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request)  {
         String newName = request.getName();
-        byte[] newPicture = (request.getPicture() != null && !request.getPicture().isEmpty())
-                ? request.getPicture().getBytes()
-                : null;
+        byte[] newPicture = null;
+
+        if (request.getPicture() != null && !request.getPicture().isEmpty()) {
+            try {
+                newPicture = request.getPicture().getBytes();
+            } catch (Exception e) {
+                throw new PictureReadException("Erro ao ler o arquivo de imagem do usuário.");
+            }
+        }
 
         User updatedUser = userService.update(id, newName, newPicture);
 

@@ -36,7 +36,7 @@ public class UserService {
     }
 
     @Transactional
-    public User create(User user) throws Exception {
+    public User create(User user)  {
         if (userRepository.findByCpf(user.getCpf()).isPresent()) {
             throw new DuplicateCpfException("Já existe um usuário com esse CPF cadastrado no sistema.");
         }
@@ -52,7 +52,7 @@ public class UserService {
     }
 
     @Transactional
-    public User update(Long id, String name, byte[] picture) throws Exception {
+    public User update(Long id, String name, byte[] picture)  {
         User user = findById(id);
 
         boolean validName = (name != null && !name.isBlank());
