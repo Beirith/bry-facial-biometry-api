@@ -62,7 +62,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping(value = "/{id}", consumes = "multipar/form-data")
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) throws IOException {
         String newName = request.getName();
         byte[] newPicture =  request.getPicture().getBytes();
