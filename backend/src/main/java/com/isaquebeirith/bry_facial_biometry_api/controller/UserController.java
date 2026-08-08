@@ -65,7 +65,9 @@ public class UserController {
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) throws IOException {
         String newName = request.getName();
-        byte[] newPicture =  request.getPicture().getBytes();
+        byte[] newPicture = (request.getPicture() != null && !request.getPicture().isEmpty())
+                ? request.getPicture().getBytes()
+                : null;
 
         User updatedUser = userService.update(id, newName, newPicture);
 
