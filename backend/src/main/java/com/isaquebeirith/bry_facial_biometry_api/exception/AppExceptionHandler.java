@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class AppExceptionHandler {
@@ -42,6 +41,16 @@ public class AppExceptionHandler {
     @ExceptionHandler(InvalidUpdateException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidUpdate(InvalidUpdateException e) {
         return generateResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(NoFaceDetectedException.class)
+    public ResponseEntity<Map<String, Object>> handleNoFaceDetected(NoFaceDetectedException e) {
+        return generateResponseEntity(HttpStatus.UNPROCESSABLE_CONTENT, e.getMessage());
+    }
+
+    @ExceptionHandler(MoreThanOneFaceDetectedException.class)
+    public ResponseEntity<Map<String, Object>> handleMoreThanOneFaceDetected(MoreThanOneFaceDetectedException e) {
+        return generateResponseEntity(HttpStatus.UNPROCESSABLE_CONTENT, e.getMessage());
     }
 
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {
