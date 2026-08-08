@@ -14,7 +14,10 @@ public class FacialTemplate {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id",
+            nullable = false, unique = true, foreignKey = @ForeignKey(
+            name = "fk_facial_template_user",
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"))
     private User user;
 
     @Column(name = "feature_vector", nullable = false)
