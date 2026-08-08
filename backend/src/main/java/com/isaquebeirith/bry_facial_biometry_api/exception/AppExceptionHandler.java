@@ -53,6 +53,16 @@ public class AppExceptionHandler {
         return generateResponseEntity(HttpStatus.UNPROCESSABLE_CONTENT, e.getMessage());
     }
 
+    @ExceptionHandler(FacialDetectionException.class)
+    public ResponseEntity<Map<String, Object>> handleFacialDetection(FacialDetectionException e) {
+        return generateResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(FacialExtractionException.class)
+    public ResponseEntity<Map<String, Object>> handleFacialExtraction(FacialDetectionException e) {
+        return generateResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("status", status.value());
