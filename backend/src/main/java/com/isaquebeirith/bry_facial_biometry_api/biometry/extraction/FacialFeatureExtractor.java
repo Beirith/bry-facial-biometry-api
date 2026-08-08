@@ -1,4 +1,4 @@
-package com.isaquebeirith.bry_facial_biometry_api.biometry.recognition;
+package com.isaquebeirith.bry_facial_biometry_api.biometry.extraction;
 
 import ai.djl.inference.Predictor;
 import ai.djl.modality.cv.Image;

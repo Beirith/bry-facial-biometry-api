@@ -4,7 +4,7 @@ import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.output.DetectedObjects;
 import ai.djl.modality.cv.output.Rectangle;
 import com.isaquebeirith.bry_facial_biometry_api.biometry.detection.FacialDetector;
-import com.isaquebeirith.bry_facial_biometry_api.biometry.recognition.FacialFeatureExtractor;
+import com.isaquebeirith.bry_facial_biometry_api.biometry.extraction.FacialFeatureExtractor;
 import com.isaquebeirith.bry_facial_biometry_api.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -56,5 +56,4 @@ public class FacialTemplateGenerator {
 
         return image.getSubImage(x, y, width, height);
     }
-
 }
