@@ -4,6 +4,8 @@ import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
 import com.isaquebeirith.bry_facial_biometry_api.biometry.comparation.FacialTemplateComparator;
 import com.isaquebeirith.bry_facial_biometry_api.biometry.generation.FacialTemplateGenerator;
+import com.isaquebeirith.bry_facial_biometry_api.dto.IdentificationResponseDTO;
+import com.isaquebeirith.bry_facial_biometry_api.dto.UserResponseDTO;
 import com.isaquebeirith.bry_facial_biometry_api.dto.VerificationResponseDTO;
 import com.isaquebeirith.bry_facial_biometry_api.exception.FacialTemplateNotFoundException;
 import com.isaquebeirith.bry_facial_biometry_api.exception.FeatureVectorGenerationException;
@@ -16,21 +18,20 @@ import com.isaquebeirith.bry_facial_biometry_api.util.FeatureVectorConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class FacialTemplateService {
     private final FacialTemplateRepository facialTemplateRepository;
-    private final UserRepository  userRepository;
+    private final UserRepository userRepository;
 
     private final FacialTemplateGenerator facialTemplateGenerator;
     private final FacialTemplateComparator facialTemplateComparator;
 
-    public void createFacialTemplate(User user)  {
+    public void createFacialTemplate(User user) {
         FacialTemplate newFacialTemplate = new FacialTemplate();
         newFacialTemplate.setUser(user);
 
@@ -41,7 +42,7 @@ public class FacialTemplateService {
         facialTemplateRepository.save(newFacialTemplate);
     }
 
-    public void updateFacialTemplate(User user)  {
+    public void updateFacialTemplate(User user) {
         Optional<FacialTemplate> oldFacialTemplate = facialTemplateRepository.findByUserId(user.getId());
 
         if (oldFacialTemplate.isPresent()) {
@@ -49,19 +50,13 @@ public class FacialTemplateService {
             byte[] featureVector = generateFeatureVector(user.getPicture());
             template.setFeatureVector(featureVector);
             facialTemplateRepository.save(template);
-        } else  {
+        } else {
             createFacialTemplate(user);
         }
     }
 
-    private byte[] generateFeatureVector(byte[] pictureBytes)  {
-        Image image;
-        try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
-            image = ImageFactory.getInstance().fromInputStream(inputStream);
-        } catch (Exception e) {
-            throw new FeatureVectorGenerationException("Erro ao gerar vetor de características a partir da foto.");
-        }
+    private byte[] generateFeatureVector(byte[] pictureBytes) {
+        Image image = generateImage(pictureBytes);
 
         float[] floatVector = facialTemplateGenerator.generate(image);
 
@@ -76,13 +71,7 @@ public class FacialTemplateService {
                 () -> new FacialTemplateNotFoundException("O usuário fornecido não possui foto cadastrada.")
         );
 
-        Image image;
-        try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
-            image = ImageFactory.getInstance().fromInputStream(inputStream);
-        } catch (Exception e) {
-            throw new FeatureVectorGenerationException("Erro ao gerar vetor de características a partir da foto.");
-        }
+        Image image = generateImage(pictureBytes);
 
         float[] storedVector = FeatureVectorConverter.toFloatArray(storedFacialTemplate.getFeatureVector());
         float[] newVector = facialTemplateGenerator.generate(image);
@@ -95,5 +84,51 @@ public class FacialTemplateService {
         response.setSimilarityScore(similarity);
 
         return response;
+    }
+
+    public IdentificationResponseDTO identifyFacialTemplate(byte[] pictureBytes) {
+        Image image = generateImage(pictureBytes);
+
+        float[] newVector = facialTemplateGenerator.generate(image);
+
+        List<FacialTemplate> allTemplates = facialTemplateRepository.findAll();
+
+        float bestScore = 0.0F;
+        User bestUser = null;
+
+        for (FacialTemplate template : allTemplates) {
+            float[] storedVector = FeatureVectorConverter.toFloatArray(template.getFeatureVector());
+            float score = facialTemplateComparator.calculateSimilarity(storedVector, newVector);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestUser = template.getUser();
+            }
+        }
+
+        IdentificationResponseDTO response = new IdentificationResponseDTO();
+
+        if (bestUser != null && facialTemplateComparator.matches(bestScore)) {
+            response.setIdentified(true);
+            response.setUser(UserResponseDTO.fromEntity(bestUser));
+        } else {
+            response.setIdentified(false);
+        }
+        response.setScore(bestScore);
+
+        return response;
+    }
+
+    private Image generateImage(byte[] pictureBytes) {
+        Image image;
+
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
+            image = ImageFactory.getInstance().fromInputStream(inputStream);
+        } catch (Exception e) {
+            throw new FeatureVectorGenerationException("Erro ao gerar vetor de características a partir da foto.");
+        }
+
+        return image;
     }
 }
