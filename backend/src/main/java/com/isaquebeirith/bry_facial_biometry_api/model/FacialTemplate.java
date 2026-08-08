@@ -17,7 +17,6 @@ public class FacialTemplate {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Lob
     @Column(name = "feature_vector", nullable = false)
     private byte[] featureVector;
 }

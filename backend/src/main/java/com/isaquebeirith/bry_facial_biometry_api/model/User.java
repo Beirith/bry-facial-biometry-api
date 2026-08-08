@@ -21,7 +21,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @Lob
     @Column(nullable = false)
     private byte[] picture;
 }
