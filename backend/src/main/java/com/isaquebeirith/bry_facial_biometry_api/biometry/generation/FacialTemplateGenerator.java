@@ -5,6 +5,8 @@ import ai.djl.modality.cv.output.DetectedObjects;
 import ai.djl.modality.cv.output.Rectangle;
 import com.isaquebeirith.bry_facial_biometry_api.biometry.detection.FacialDetector;
 import com.isaquebeirith.bry_facial_biometry_api.biometry.recognition.FacialFeatureExtractor;
+import com.isaquebeirith.bry_facial_biometry_api.exception.MoreThanOneFaceDetectedException;
+import com.isaquebeirith.bry_facial_biometry_api.exception.NoFaceDetectedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,14 +22,12 @@ public class FacialTemplateGenerator {
         DetectedObjects detections = facialDetector.detect(image);
         List<DetectedObjects.DetectedObject> faces = detections.items();
 
-        //ToDO: padronizar exceções
         if (faces.isEmpty()) {
-            throw new RuntimeException("Nenhum rosto detectado na imagem.");
+            throw new NoFaceDetectedException("Nenhum rosto detectado na imagem.");
         }
 
-        //ToDO: padronizar exceções
         if (faces.size() > 1) {
-            throw new RuntimeException("Mais de um rosto detectado na imagem.");
+            throw new MoreThanOneFaceDetectedException("Mais de um rosto detectado na imagem.");
         }
 
         DetectedObjects.DetectedObject face = faces.getFirst();
