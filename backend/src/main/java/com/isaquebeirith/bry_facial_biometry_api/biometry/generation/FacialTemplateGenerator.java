@@ -1,4 +1,4 @@
-package com.isaquebeirith.bry_facial_biometry_api.biometry.generator;
+package com.isaquebeirith.bry_facial_biometry_api.biometry.generation;
 
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.output.DetectedObjects;
