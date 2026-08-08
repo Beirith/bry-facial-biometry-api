@@ -26,7 +26,7 @@ public class FacialTemplateService {
         FacialTemplate newFacialTemplate = new FacialTemplate();
         newFacialTemplate.setUser(user);
 
-        byte[] featureVector = generateFeatureVector(user);
+        byte[] featureVector = generateFeatureVector(user.getPicture());
 
         newFacialTemplate.setFeatureVector(featureVector);
 
@@ -38,7 +38,7 @@ public class FacialTemplateService {
 
         if (oldFacialTemplate.isPresent()) {
             FacialTemplate template = oldFacialTemplate.get();
-            byte[] featureVector = generateFeatureVector(user);
+            byte[] featureVector = generateFeatureVector(user.getPicture());
             template.setFeatureVector(featureVector);
             facialTemplateRepository.save(template);
         } else  {
@@ -46,12 +46,10 @@ public class FacialTemplateService {
         }
     }
 
-    private byte[] generateFeatureVector(User user)  {
-        byte[] pictureBytes = user.getPicture();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
-
+    private byte[] generateFeatureVector(byte[] pictureBytes)  {
         Image image;
         try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
             image = ImageFactory.getInstance().fromInputStream(inputStream);
         } catch (Exception e) {
             throw new FeatureVectorGenerationException("Erro ao gerar vetor de características a partir da foto.");
