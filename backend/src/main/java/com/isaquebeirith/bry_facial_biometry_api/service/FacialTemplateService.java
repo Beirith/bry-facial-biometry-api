@@ -6,10 +6,18 @@ import com.isaquebeirith.bry_facial_biometry_api.repository.FacialTemplateReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FacialTemplateService {
     private final FacialTemplateRepository facialTemplateRepository;
 
-    public void createFacialTemplate(User user) {}
+    public void createFacialTemplate(User user) {
+
+    }
+
+    public List<FacialTemplate> findAll() {
+        return facialTemplateRepository.findAll();
+    }
 }
