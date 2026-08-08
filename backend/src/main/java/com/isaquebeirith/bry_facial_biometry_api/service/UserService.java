@@ -69,7 +69,7 @@ public class UserService {
 
         if (validPicture) {
             user.setPicture(picture);
-            facialTemplateService.createFacialTemplate(user);
+            facialTemplateService.updateFacialTemplate(user);
         }
 
         return userRepository.save(user);

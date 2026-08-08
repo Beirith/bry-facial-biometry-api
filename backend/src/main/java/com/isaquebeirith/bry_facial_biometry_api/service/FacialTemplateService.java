@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,18 +21,35 @@ public class FacialTemplateService {
 
     public void createFacialTemplate(User user) throws Exception {
         FacialTemplate newFacialTemplate = new FacialTemplate();
-
         newFacialTemplate.setUser(user);
 
+        byte[] featureVector = generateFeatureVector(user);
+
+        newFacialTemplate.setFeatureVector(featureVector);
+
+        facialTemplateRepository.save(newFacialTemplate);
+    }
+
+    public void updateFacialTemplate(User user) throws Exception {
+        Optional<FacialTemplate> oldFacialTemplate = facialTemplateRepository.findByUserId(user.getId());
+
+        if (oldFacialTemplate.isPresent()) {
+            FacialTemplate template = oldFacialTemplate.get();
+            byte[] featureVector = generateFeatureVector(user);
+            template.setFeatureVector(featureVector);
+            facialTemplateRepository.save(template);
+        } else  {
+            createFacialTemplate(user);
+        }
+    }
+
+    private byte[] generateFeatureVector(User user) throws Exception {
         byte[] pictureBytes = user.getPicture();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
         Image image = ImageFactory.getInstance().fromInputStream(inputStream);
 
         float[] floatVector = facialTemplateGenerator.generate(image);
-        byte[] featureVector = FeatureVectorConverter.toByteArray(floatVector);
 
-        newFacialTemplate.setFeatureVector(featureVector);
-
-        facialTemplateRepository.save(newFacialTemplate);
+        return FeatureVectorConverter.toByteArray(floatVector);
     }
 }
