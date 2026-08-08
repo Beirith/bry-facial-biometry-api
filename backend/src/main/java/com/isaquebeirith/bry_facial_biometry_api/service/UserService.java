@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -35,7 +36,7 @@ public class UserService {
     }
 
     @Transactional
-    public User create(User user) {
+    public User create(User user) throws Exception {
         if (userRepository.findByCpf(user.getCpf()).isPresent()) {
             throw new DuplicateCpfException("Já existe um usuário com esse CPF cadastrado no sistema.");
         }
@@ -51,7 +52,7 @@ public class UserService {
     }
 
     @Transactional
-    public User update(Long id, String name, byte[] picture) {
+    public User update(Long id, String name, byte[] picture) throws Exception {
         User user = findById(id);
 
         boolean validName = (name != null && !name.isBlank());

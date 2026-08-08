@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<UserResponseDTO> create(@Valid UserCreateDTO request) throws IOException {
+    public ResponseEntity<UserResponseDTO> create(@Valid UserCreateDTO request) throws Exception {
         User newUser = new User();
         newUser.setName(request.getName());
         newUser.setCpf(request.getCpf());
@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) throws IOException {
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) throws Exception {
         String newName = request.getName();
         byte[] newPicture = (request.getPicture() != null && !request.getPicture().isEmpty())
                 ? request.getPicture().getBytes()
