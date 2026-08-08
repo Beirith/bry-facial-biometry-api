@@ -63,6 +63,16 @@ public class AppExceptionHandler {
         return generateResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
+    @ExceptionHandler(FeatureVectorGenerationException.class)
+    public ResponseEntity<Map<String, Object>> handleFeatureVectorGeneration(FeatureVectorGenerationException e) {
+        return generateResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(PictureReadException.class)
+    public ResponseEntity<Map<String, Object>> handlePictureRead(PictureReadException e) {
+        return generateResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("status", status.value());
