@@ -5,13 +5,11 @@ import com.isaquebeirith.bry_facial_biometry_api.exception.InvalidPictureExcepti
 import com.isaquebeirith.bry_facial_biometry_api.exception.InvalidUpdateException;
 import com.isaquebeirith.bry_facial_biometry_api.exception.UserNotFoundException;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
-import com.isaquebeirith.bry_facial_biometry_api.repository.FacialTemplateRepository;
 import com.isaquebeirith.bry_facial_biometry_api.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -19,7 +17,6 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final FacialTemplateService facialTemplateService;
-    private final FacialTemplateRepository facialTemplateRepository;
 
     public List<User> findAll() {
         return userRepository.findAll();
