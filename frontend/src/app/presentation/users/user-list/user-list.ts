@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { UserService } from '../../../data/services/user.service';
 import { User } from '../../../data/models/user';
 
@@ -14,7 +15,10 @@ export class UserList implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.userService.findAll().subscribe({
@@ -28,4 +32,8 @@ export class UserList implements OnInit {
       }
     });
   }
+
+  editUser(id: number): void {
+    console.log('Editar clicado, id:', id);
+    this.router.navigate(['/users/edit', id]);
 }
