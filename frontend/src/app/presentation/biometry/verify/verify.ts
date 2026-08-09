@@ -3,10 +3,14 @@ import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import {FacialTemplateService} from '../../../data/services/facial-template.service';
 import {VerificationResult} from '../../../data/models/verification-result';
+import {NavigationService} from '../../../data/services/navigation.service';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
   selector: 'app-verify',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './verify.html',
   styleUrl: './verify.css'
 })
@@ -22,7 +26,10 @@ export class Verify {
   error = signal<string | null>(null);
   submitting = signal(false);
 
-  constructor(private facialTemplateService: FacialTemplateService) {
+  constructor
+  (private facialTemplateService: FacialTemplateService,
+   private navigationService: NavigationService
+  ) {
   }
 
   onPictureSelected(event: Event): void {
@@ -61,5 +68,9 @@ export class Verify {
         this.submitting.set(false);
       }
     });
+  }
+
+  goHome(): void {
+    this.navigationService.goHome();
   }
 }

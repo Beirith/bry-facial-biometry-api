@@ -2,10 +2,12 @@ import {Component, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FacialTemplateService} from '../../../data/services/facial-template.service';
 import {IdentificationResult} from '../../../data/models/identification-result';
+import {NavigationService} from '../../../data/services/navigation.service';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-identify',
-  imports: [CommonModule],
+  imports: [CommonModule, MatButtonModule],
   templateUrl: './identify.html',
   styleUrl: './identify.css'
 })
@@ -15,7 +17,9 @@ export class Identify {
   error = signal<string | null>(null);
   submitting = signal(false);
 
-  constructor(private facialTemplateService: FacialTemplateService) {
+  constructor(
+    private facialTemplateService: FacialTemplateService,
+    private navigationService: NavigationService) {
   }
 
   onPictureSelected(event: Event): void {
@@ -48,5 +52,9 @@ export class Identify {
         this.submitting.set(false);
       }
     });
+  }
+
+  goHome(): void {
+    this.navigationService.goHome();
   }
 }

@@ -1,13 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormArray, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { UserService } from '../../../data/services/user.service';
-import { BatchResult } from '../../../data/models/batch-result';
+import {Component, inject, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormArray, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
+import {Router} from '@angular/router';
+import {UserService} from '../../../data/services/user.service';
+import {BatchResult} from '../../../data/models/batch-result';
+import {NavigationService} from '../../../data/services/navigation.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-user-batch-create',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+
   templateUrl: './user-batch-create.html',
   styleUrl: './user-batch-create.css'
 })
@@ -26,8 +31,10 @@ export class UserBatchCreate {
 
   constructor(
     private userService: UserService,
+    private navigationService: NavigationService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   private createUserGroup(): FormGroup {
     return this.fb.group({
@@ -73,14 +80,12 @@ export class UserBatchCreate {
     }
 
     const usersData = this.usersFormArray.value;
-    const usersDataBlob = new Blob([JSON.stringify(usersData)], { type: 'application/json' });
 
     const formData = new FormData();
-    formData.append('usersData', usersDataBlob);
+    formData.append('usersData', JSON.stringify(usersData));
     this.selectedFiles.forEach(file => {
       formData.append('pictures', file as File);
     });
-
     this.submitting.set(true);
     this.error.set(null);
     this.results.set(null);
@@ -95,5 +100,9 @@ export class UserBatchCreate {
         this.submitting.set(false);
       }
     });
+  }
+
+  goHome(): void {
+    this.navigationService.goHome();
   }
 }

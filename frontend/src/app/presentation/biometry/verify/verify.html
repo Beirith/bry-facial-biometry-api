@@ -1,27 +1,37 @@
-<h1>Verificação facial (1:1)</h1>
+<div class="page-container">
+  <h1>Verificação facial (1:1)</h1>
 
-<form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
 
-  <div>
-    <label for="cpf">CPF</label>
-    <input id="cpf" type="text" formControlName="cpf" />
+    <mat-form-field appearance="outline">
+      <mat-label>CPF</mat-label>
+      <input matInput formControlName="cpf" />
+      <mat-error *ngIf="verifyForm.get('cpf')?.hasError('required')">
+        CPF é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <div class="file-upload">
+      <button mat-stroked-button type="button" (click)="fileInput.click()">
+        📎 Selecionar foto
+      </button>
+      <input #fileInput type="file" accept="image/*" (change)="onPictureSelected($event)" hidden />
+      <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+    </div>
+
+    <p *ngIf="error()">{{ error() }}</p>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Verificando...' : 'Verificar' }}
+    </button>
+
+  </form>
+
+  <div *ngIf="result()" class="result-card" [class.success]="result()!.matches" [class.fail]="!result()!.matches">
+    <h2 *ngIf="result()!.matches">Compatível</h2>
+    <h2 *ngIf="!result()!.matches">Não compatível</h2>
+    <p><strong>Score:</strong> {{ result()!.similarityScore | number:'1.2-2' }}</p>
   </div>
 
-  <div>
-    <label for="picture">Foto</label>
-    <input id="picture" type="file" accept="image/*" (change)="onPictureSelected($event)" />
-  </div>
-
-  <p *ngIf="error()">{{ error() }}</p>
-
-  <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Verificando...' : 'Verificar' }}
-  </button>
-
-</form>
-
-<div *ngIf="result()">
-  <h2>Resultado</h2>
-  <p><strong>Match:</strong> {{ result()!.matches ? 'Compatível' : 'Não compatível' }}</p>
-  <p><strong>Score:</strong> {{ result()!.similarityScore | number:'1.2-2' }}</p>
+  <button mat-button (click)="goHome()">← Voltar</button>
 </div>

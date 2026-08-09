@@ -3,10 +3,14 @@ import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../../data/services/user.service';
+import {NavigationService} from '../../../data/services/navigation.service';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
   selector: 'app-user-edit',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './user-edit.html',
   styleUrl: './user-edit.css'
 })
@@ -26,7 +30,8 @@ export class UserEdit implements OnInit {
 
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private navigationService: NavigationService,
   ) {
   }
 
@@ -77,5 +82,9 @@ export class UserEdit implements OnInit {
         this.error.set(err.error?.message || 'Erro ao atualizar usuário.');
       }
     });
+  }
+
+  goHome(): void {
+    this.navigationService.goHome();
   }
 }

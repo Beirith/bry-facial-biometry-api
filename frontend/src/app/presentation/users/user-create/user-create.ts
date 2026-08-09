@@ -3,10 +3,13 @@ import {CommonModule} from '@angular/common'
 import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../../data/services/user.service';
+import {MatButtonModule} from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-user-create',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './user-create.html',
   styleUrl: './user-create.css'
 })
@@ -24,7 +27,8 @@ export class UserCreate {
 
   constructor(
     private userService: UserService,
-    private router: Router) {}
+    private router: Router) {
+  }
 
   onPictureSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -63,5 +67,9 @@ export class UserCreate {
         this.error.set(err.error?.message || 'Erro ao cadastrar usuário.');
       }
     });
+  }
+
+  goHome(): void {
+    this.router.navigate(['/']);
   }
 }

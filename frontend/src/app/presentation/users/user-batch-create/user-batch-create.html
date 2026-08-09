@@ -1,48 +1,55 @@
-<h1>Cadastro em lote</h1>
+<div class="page-container">
+  <h1>Cadastro em lote</h1>
 
-<form [formGroup]="batchForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="batchForm" (ngSubmit)="onSubmit()">
 
-  <div formArrayName="users">
-    <div *ngFor="let group of userGroups; let i = index" [formGroupName]="i">
-      <h3>Usuário {{ i + 1 }}</h3>
+    <div formArrayName="users">
+      <div *ngFor="let group of userGroups; let i = index" [formGroupName]="i" class="user-block">
+        <h3>Usuário {{ i + 1 }}</h3>
 
-      <div>
-        <label>Nome</label>
-        <input type="text" formControlName="name" />
+        <mat-form-field appearance="outline">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>CPF</mat-label>
+          <input matInput formControlName="cpf" />
+        </mat-form-field>
+
+        <div class="file-upload">
+          <button mat-stroked-button type="button" (click)="fileInput.click()">
+            📎 Selecionar foto
+          </button>
+          <input #fileInput type="file" accept="image/*" (change)="onFileSelected(i, $event)" hidden />
+          <span *ngIf="selectedFiles[i]">{{ selectedFiles[i]?.name }}</span>
+        </div>
+
+        <button mat-stroked-button color="warn" type="button" (click)="removeUser(i)" *ngIf="userGroups.length > 1">
+          Remover
+        </button>
       </div>
-
-      <div>
-        <label>CPF</label>
-        <input type="text" formControlName="cpf" />
-      </div>
-
-      <div>
-        <label>Foto</label>
-        <input type="file" accept="image/*" (change)="onFileSelected(i, $event)" />
-      </div>
-
-      <button type="button" (click)="removeUser(i)" *ngIf="userGroups.length > 1">
-        Remover
-      </button>
     </div>
+
+    <button mat-stroked-button type="button" (click)="addUser()">+ Adicionar usuário</button>
+
+    <p *ngIf="error()">{{ error() }}</p>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Cadastrando...' : 'Cadastrar todos' }}
+    </button>
+
+  </form>
+
+  <div *ngIf="results()">
+    <h2>Resultado</h2>
+    <ul>
+      <li *ngFor="let result of results()">
+        <span *ngIf="result.success"> {{ result.name }} ({{ result.cpf }}) — cadastrado com sucesso</span>
+        <span *ngIf="!result.success"> {{ result.name || 'Usuário' }} — erro: {{ result.error }}</span>
+      </li>
+    </ul>
   </div>
 
-  <button type="button" (click)="addUser()">+ Adicionar usuário</button>
-
-  <p *ngIf="error()">{{ error() }}</p>
-
-  <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Cadastrando...' : 'Cadastrar todos' }}
-  </button>
-
-</form>
-
-<div *ngIf="results()">
-  <h2>Resultado</h2>
-  <ul>
-    <li *ngFor="let result of results()">
-      <span *ngIf="result.success">[OK] {{ result.name }} ({{ result.cpf }}) — cadastrado com sucesso</span>
-      <span *ngIf="!result.success">[ERRO] {{ result.name || 'Usuário' }} — erro: {{ result.error }}</span>
-    </li>
-  </ul>
+  <button mat-button (click)="goHome()">← Voltar</button>
 </div>

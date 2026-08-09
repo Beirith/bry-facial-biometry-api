@@ -3,10 +3,12 @@ import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../../data/services/user.service';
 import {User} from '../../../data/models/user';
+import {NavigationService} from '../../../data/services/navigation.service';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-user-details',
-  imports: [CommonModule],
+  imports: [CommonModule, MatButtonModule],
   templateUrl: './user-details.html',
   styleUrl: './user-details.css'
 })
@@ -20,6 +22,7 @@ export class UserDetails implements OnInit {
 
   constructor(
     private userService: UserService,
+    private navigationService: NavigationService,
     private router: Router
   ) {
   }
@@ -38,5 +41,13 @@ export class UserDetails implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  editUser(): void {
+    this.router.navigate(['/users/edit', this.user()!.id]);
+  }
+
+  goHome(): void {
+    this.navigationService.goHome();
   }
 }
