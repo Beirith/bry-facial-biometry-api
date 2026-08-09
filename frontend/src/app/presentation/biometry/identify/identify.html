@@ -1,0 +1,25 @@
+<h1>Identificação facial (1:n)</h1>
+
+<div>
+  <label for="picture">Foto</label>
+  <input id="picture" type="file" accept="image/*" (change)="onPictureSelected($event)"/>
+</div>
+
+<p *ngIf="error()">{{ error() }}</p>
+
+<button (click)="onSubmit()" [disabled]="submitting()">
+  {{ submitting() ? 'Identificando...' : 'Identificar' }}
+</button>
+
+<div *ngIf="result()">
+  <h2>Resultado</h2>
+  <div *ngIf="result()!.identified">
+    <p><strong>Usuário identificado:</strong> {{ result()!.user!.name }}</p>
+    <p><strong>CPF:</strong> {{ result()!.user!.cpf }}</p>
+    <p><strong>Score:</strong> {{ result()!.score | number:'1.2-2' }}</p>
+  </div>
+  <div *ngIf="!result()!.identified">
+    <p>Não foi possível identificar o usuário.</p>
+    <p><strong>Melhor score encontrado:</strong> {{ result()!.score | number:'1.2-2' }}</p>
+  </div>
+</div>
