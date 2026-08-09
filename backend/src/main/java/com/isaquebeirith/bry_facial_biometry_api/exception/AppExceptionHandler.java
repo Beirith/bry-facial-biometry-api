@@ -73,6 +73,11 @@ public class AppExceptionHandler {
         return generateResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
+    @ExceptionHandler(MissingPictureException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingPicture(MissingPictureException e) {
+        return generateResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("status", status.value());

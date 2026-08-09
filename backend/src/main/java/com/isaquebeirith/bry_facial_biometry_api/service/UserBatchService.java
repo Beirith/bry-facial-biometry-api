@@ -2,21 +2,27 @@ package com.isaquebeirith.bry_facial_biometry_api.service;
 
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserBatchResultDTO;
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserCreateBatchDTO;
+import com.isaquebeirith.bry_facial_biometry_api.exception.MissingPictureException;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserBatchService {
     private final UserService userService;
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
+    private final Validator validator;
 
     public List<UserBatchResultDTO> createBatch(List<UserCreateBatchDTO> users, List<byte[]> pictures) {
         List<Future<UserBatchResultDTO>> futuresResults = new ArrayList<>();
@@ -45,11 +51,23 @@ public class UserBatchService {
         return results;
     }
 
-    // ToDo: Emitir erro em requests sem nome ou foto
     private UserBatchResultDTO processUser(UserCreateBatchDTO user, byte[] picture) {
         UserBatchResultDTO result = new UserBatchResultDTO();
 
         try {
+            Set<ConstraintViolation<UserCreateBatchDTO>> violations = validator.validate(user);
+
+            // ToDo: padronizar erro
+            if (!violations.isEmpty()) {
+                String errorMessage = violations.stream().map(ConstraintViolation::getMessage)
+                        .collect(Collectors.joining(", "));
+                throw new RuntimeException(errorMessage);
+            }
+
+            if (picture == null || picture.length == 0) {
+                throw new MissingPictureException("É obrigatório anexar uma foto do usuário.");
+            }
+
             User newUser = new User();
             newUser.setName(user.getName());
             newUser.setCpf(user.getCpf());
