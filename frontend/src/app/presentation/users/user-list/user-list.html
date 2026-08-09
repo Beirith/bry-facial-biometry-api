@@ -9,6 +9,7 @@
     <th>ID</th>
     <th>Nome</th>
     <th>CPF</th>
+    <th>Ações</th>
   </tr>
   </thead>
   <tbody>
@@ -16,6 +17,7 @@
     <td>{{ user.id }}</td>
     <td>{{ user.name }}</td>
     <td>{{ user.cpf }}</td>
+      <button (click)="editUser(user.id)">Editar</button>
   </tr>
   </tbody>
 </table>
