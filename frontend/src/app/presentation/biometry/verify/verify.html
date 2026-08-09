@@ -1,0 +1,27 @@
+<h1>Verificação facial (1:1)</h1>
+
+<form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="cpf">CPF</label>
+    <input id="cpf" type="text" formControlName="cpf" />
+  </div>
+
+  <div>
+    <label for="picture">Foto</label>
+    <input id="picture" type="file" accept="image/*" (change)="onPictureSelected($event)" />
+  </div>
+
+  <p *ngIf="error()">{{ error() }}</p>
+
+  <button type="submit" [disabled]="submitting()">
+    {{ submitting() ? 'Verificando...' : 'Verificar' }}
+  </button>
+
+</form>
+
+<div *ngIf="result()">
+  <h2>Resultado</h2>
+  <p><strong>Match:</strong> {{ result()!.matches ? 'Compatível' : 'Não compatível' }}</p>
+  <p><strong>Score:</strong> {{ result()!.similarityScore | number:'1.2-2' }}</p>
+</div>
