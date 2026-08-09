@@ -8,9 +8,12 @@ import com.isaquebeirith.bry_facial_biometry_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +52,15 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping(value = "/{id}/picture", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getPicture(@PathVariable Long id) {
+        User user = userService.findById(id);
+
+        return ResponseEntity.ok(user.getPicture());
+    }
+
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<UserResponseDTO> create(@Valid UserCreateDTO request)  {
+    public ResponseEntity<UserResponseDTO> create(@Valid UserCreateDTO request) {
         User newUser = new User();
         newUser.setName(request.getName());
         newUser.setCpf(request.getCpf());
@@ -67,7 +77,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request)  {
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) {
         String newName = request.getName();
         byte[] newPicture = null;
 
@@ -84,8 +94,18 @@ public class UserController {
 
     @PostMapping(value = "/batch", consumes = "multipart/form-data")
     public ResponseEntity<List<UserBatchResultDTO>> createBatch(
-            @RequestPart("users") List<UserCreateBatchDTO> users,
-            @RequestPart("pictures") List<MultipartFile> pictures) {
+            @RequestParam String usersData,
+            @RequestParam List<MultipartFile> pictures
+    ) {
+        List<UserCreateBatchDTO> users;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            users = objectMapper.readValue(usersData, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao interpretar os dados dos usuários.");
+        }
+
         if (users.size() != pictures.size()) {
             throw new RuntimeException("A quantidade de usuários não corresponde à quantidade de fotos enviadas.");
         }
@@ -95,9 +115,9 @@ public class UserController {
             pictureBytesList.add(getPictureBytes(picture));
         }
 
-        List<UserBatchResultDTO> response = userBatchService.createBatch(users, pictureBytesList);
+        List<UserBatchResultDTO> results = userBatchService.createBatch(users, pictureBytesList);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(results);
     }
 
     @DeleteMapping("/{id}")
@@ -116,6 +136,6 @@ public class UserController {
             throw new PictureReadException("Erro ao ler o arquivo de imagem do usuário.");
         }
 
-        return  pictureBytes;
+        return pictureBytes;
     }
 }
