@@ -45,6 +45,7 @@ public class UserBatchService {
         return results;
     }
 
+    // ToDo: Emitir erro em requests sem nome ou foto
     private UserBatchResultDTO processUser(UserCreateBatchDTO user, byte[] picture) {
         UserBatchResultDTO result = new UserBatchResultDTO();
 
