@@ -3,6 +3,7 @@ package com.isaquebeirith.bry_facial_biometry_api.controller;
 import com.isaquebeirith.bry_facial_biometry_api.dto.*;
 import com.isaquebeirith.bry_facial_biometry_api.exception.PictureReadException;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
+import com.isaquebeirith.bry_facial_biometry_api.service.UserBatchService;
 import com.isaquebeirith.bry_facial_biometry_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserBatchService userBatchService;
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAll() {
@@ -75,6 +78,24 @@ public class UserController {
         User updatedUser = userService.update(id, newName, newPicture);
 
         UserResponseDTO response = UserResponseDTO.fromEntity(updatedUser);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/batch", consumes = "multipart/form-data")
+    public ResponseEntity<List<UserBatchResultDTO>> createBatch(
+            @RequestPart("users") List<UserCreateBatchDTO> users,
+            @RequestPart("pictures") List<MultipartFile> pictures) {
+        if (users.size() != pictures.size()) {
+            throw new RuntimeException("A quantidade de usuários não corresponde à quantidade de fotos enviadas.");
+        }
+
+        List<byte[]> pictureBytesList = new ArrayList<>();
+        for (MultipartFile picture : pictures) {
+            pictureBytesList.add(getPictureBytes(picture));
+        }
+
+        List<UserBatchResultDTO> response = userBatchService.createBatch(users, pictureBytesList);
 
         return ResponseEntity.ok(response);
     }
