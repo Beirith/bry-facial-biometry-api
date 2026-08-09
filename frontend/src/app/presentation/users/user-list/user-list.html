@@ -17,6 +17,8 @@
     <td>{{ user.id }}</td>
     <td>{{ user.name }}</td>
     <td>{{ user.cpf }}</td>
+    <td>
+      <button (click)="viewUser(user.id)">Detalhes</button>
       <button (click)="editUser(user.id)">Editar</button>
   </tr>
   </tbody>

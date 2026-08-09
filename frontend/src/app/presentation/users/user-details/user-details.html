@@ -1,0 +1,10 @@
+<h1>Detalhes do usuário</h1>
+
+<p *ngIf="loading()">Carregando...</p>
+<p *ngIf="error()">{{ error() }}</p>
+
+<div *ngIf="!loading() && !error() && user()">
+  <img [src]="pictureUrl" alt="Foto do usuário" width="200" />
+  <p><strong>Nome:</strong> {{ user()!.name }}</p>
+  <p><strong>CPF:</strong> {{ user()!.cpf }}</p>
+</div>

@@ -36,4 +36,8 @@ export class UserList implements OnInit {
   editUser(id: number): void {
     console.log('Editar clicado, id:', id);
     this.router.navigate(['/users/edit', id]);
+
+  viewUser(id: number): void {
+    this.router.navigate(['/users', id]);
+  }
 }
