@@ -1,0 +1,23 @@
+<h1>Editar usuário</h1>
+
+<p *ngIf="loading()">Carregando...</p>
+
+<form *ngIf="!loading()" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="name">Nome</label>
+    <input id="name" type="text" formControlName="name" />
+  </div>
+
+  <div>
+    <label for="picture">Nova foto (opcional)</label>
+    <input id="picture" type="file" accept="image/*" (change)="onPictureSelected($event)" />
+  </div>
+
+  <p *ngIf="error()">{{ error() }}</p>
+
+  <button type="submit" [disabled]="submitting() || (updateForm.pristine && !selectedFile)">
+    {{ submitting() ? 'Salvando...' : 'Salvar' }}
+  </button>
+
+</form>
