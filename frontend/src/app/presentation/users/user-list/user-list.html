@@ -1,25 +1,30 @@
-<h1>Usuários cadastrados</h1>
+<div class="page-container">
+  <h1>Usuários cadastrados</h1>
 
-<p *ngIf="loading()">Carregando...</p>
-<p *ngIf="error()">{{ error() }}</p>
+  <p *ngIf="loading()">Carregando...</p>
+  <p *ngIf="error()">{{ error() }}</p>
 
-<table *ngIf="!loading() && !error()">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Nome</th>
-    <th>CPF</th>
-    <th>Ações</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let user of users()">
-    <td>{{ user.id }}</td>
-    <td>{{ user.name }}</td>
-    <td>{{ user.cpf }}</td>
-    <td>
-      <button (click)="viewUser(user.id)">Detalhes</button>
-      <button (click)="editUser(user.id)">Editar</button>
-  </tr>
-  </tbody>
-</table>
+  <table *ngIf="!loading() && !error()">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>CPF</th>
+      <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users()">
+      <td>{{ user.id }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.cpf }}</td>
+      <td>
+        <button mat-stroked-button color color="primary" (click)="viewUser(user.id)">Detalhes</button>
+        <button mat-stroked-button color="primary" (click)="editUser(user.id)">Editar</button>
+        <button mat-stroked-button color="warn" (click)="deleteUser(user.id)">Excluir</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
