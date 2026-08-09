@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { User } from '../models/user';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {User} from '../models/user';
+import {BatchResult} from '../models/batch-result'
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class UserService {
   private readonly baseUrl = 'http://localhost:8080/api/users';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   findAll(): Observable<User[]> {
     return this.http.get<User[]>(this.baseUrl);
@@ -21,8 +23,16 @@ export class UserService {
     return this.http.get<User>(this.baseUrl, {params: {cpf}});
   }
 
+  getPictureUrl(id: number): string {
+    return `${this.baseUrl}/${id}/picture`;
+  }
+
   create(formData: FormData): Observable<User> {
     return this.http.post<User>(this.baseUrl, formData);
+  }
+
+  createBatch(formData: FormData): Observable<BatchResult[]> {
+    return this.http.post<BatchResult[]>(`${this.baseUrl}/batch`, formData);
   }
 
   update(id: number, formData: FormData): Observable<User> {
