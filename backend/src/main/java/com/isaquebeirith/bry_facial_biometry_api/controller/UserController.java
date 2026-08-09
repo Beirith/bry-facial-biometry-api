@@ -1,8 +1,6 @@
 package com.isaquebeirith.bry_facial_biometry_api.controller;
 
-import com.isaquebeirith.bry_facial_biometry_api.dto.UserCreateDTO;
-import com.isaquebeirith.bry_facial_biometry_api.dto.UserResponseDTO;
-import com.isaquebeirith.bry_facial_biometry_api.dto.UserUpdateDTO;
+import com.isaquebeirith.bry_facial_biometry_api.dto.*;
 import com.isaquebeirith.bry_facial_biometry_api.exception.PictureReadException;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
 import com.isaquebeirith.bry_facial_biometry_api.service.UserService;
@@ -11,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -53,11 +52,9 @@ public class UserController {
         newUser.setName(request.getName());
         newUser.setCpf(request.getCpf());
 
-        try {
-            newUser.setPicture(request.getPicture().getBytes());
-        } catch (Exception e) {
-            throw new PictureReadException("Erro ao ler o arquivo de imagem do usuário.");
-        }
+        byte[] pictureBytes = getPictureBytes(request.getPicture());
+
+        newUser.setPicture(pictureBytes);
 
         User result = userService.create(newUser);
 
@@ -72,11 +69,7 @@ public class UserController {
         byte[] newPicture = null;
 
         if (request.getPicture() != null && !request.getPicture().isEmpty()) {
-            try {
-                newPicture = request.getPicture().getBytes();
-            } catch (Exception e) {
-                throw new PictureReadException("Erro ao ler o arquivo de imagem do usuário.");
-            }
+            newPicture = getPictureBytes(request.getPicture());
         }
 
         User updatedUser = userService.update(id, newName, newPicture);
@@ -91,5 +84,17 @@ public class UserController {
         userService.deleteById(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    private byte[] getPictureBytes(MultipartFile pictureFile) {
+        byte[] pictureBytes;
+
+        try {
+            pictureBytes = pictureFile.getBytes();
+        } catch (Exception e) {
+            throw new PictureReadException("Erro ao ler o arquivo de imagem do usuário.");
+        }
+
+        return  pictureBytes;
     }
 }
