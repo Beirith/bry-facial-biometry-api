@@ -7,7 +7,10 @@
       <mat-label>CPF</mat-label>
       <input matInput formControlName="cpf" />
       <mat-error *ngIf="verifyForm.get('cpf')?.hasError('required')">
-        CPF é obrigatório
+        Obrigatório
+      </mat-error>
+      <mat-error *ngIf="verifyForm.get('cpf')?.hasError('onlyNumbers')">
+        O CPF deve conter 11 números
       </mat-error>
     </mat-form-field>
 

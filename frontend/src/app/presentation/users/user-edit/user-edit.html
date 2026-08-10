@@ -9,13 +9,13 @@
       <mat-label>Nome</mat-label>
       <input matInput formControlName="name" />
       <mat-error *ngIf="updateForm.get('name')?.hasError('required')">
-        Nome é obrigatório
+        Obrigatório
       </mat-error>
     </mat-form-field>
 
     <div class="file-upload">
       <button mat-stroked-button type="button" (click)="fileInput.click()">
-        📎 Nova foto (opcional)
+        Anexar nova foto (opcional)
       </button>
       <input #fileInput type="file" accept="image/*" (change)="onPictureSelected($event)" hidden />
       <span *ngIf="selectedFile">{{ selectedFile.name }}</span>

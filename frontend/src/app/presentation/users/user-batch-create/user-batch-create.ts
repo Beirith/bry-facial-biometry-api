@@ -8,6 +8,7 @@ import {NavigationService} from '../../../data/services/navigation.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {cpfFieldValidator} from '../../../shared/validator';
 
 @Component({
   selector: 'app-user-batch-create',
@@ -39,7 +40,7 @@ export class UserBatchCreate {
   private createUserGroup(): FormGroup {
     return this.fb.group({
       name: ['', [Validators.required]],
-      cpf: ['', [Validators.required]],
+      cpf: ['', [Validators.required, cpfFieldValidator()]],
     });
   }
 

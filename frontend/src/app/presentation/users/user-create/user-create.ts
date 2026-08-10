@@ -6,6 +6,7 @@ import {UserService} from '../../../data/services/user.service';
 import {MatButtonModule} from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {cpfFieldValidator} from '../../../shared/validator';
 
 @Component({
   selector: 'app-user-create',
@@ -18,7 +19,7 @@ export class UserCreate {
 
   userForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
-    cpf: ['', [Validators.required]],
+    cpf: ['', [Validators.required, cpfFieldValidator()]],
   });
 
   selectedFile: File | null = null;

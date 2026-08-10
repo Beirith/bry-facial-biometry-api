@@ -10,16 +10,25 @@
         <mat-form-field appearance="outline">
           <mat-label>Nome</mat-label>
           <input matInput formControlName="name" />
+          <mat-error *ngIf="group.get('name')?.hasError('required')">
+            Obrigatório
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>CPF</mat-label>
           <input matInput formControlName="cpf" />
+          <mat-error *ngIf="group.get('cpf')?.hasError('required')">
+            Obrigatório
+          </mat-error>
+          <mat-error *ngIf="group.get('cpf')?.hasError('onlyNumbers')">
+            O CPF deve conter 11 números
+          </mat-error>
         </mat-form-field>
 
         <div class="file-upload">
           <button mat-stroked-button type="button" (click)="fileInput.click()">
-            📎 Selecionar foto
+            Aenxar foto
           </button>
           <input #fileInput type="file" accept="image/*" (change)="onFileSelected(i, $event)" hidden />
           <span *ngIf="selectedFiles[i]">{{ selectedFiles[i]?.name }}</span>

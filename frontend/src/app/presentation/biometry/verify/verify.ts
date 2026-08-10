@@ -7,6 +7,7 @@ import {NavigationService} from '../../../data/services/navigation.service';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
+import {cpfFieldValidator} from '../../../shared/validator';
 
 @Component({
   selector: 'app-verify',
@@ -18,7 +19,7 @@ export class Verify {
   private fb = inject(FormBuilder);
 
   verifyForm: FormGroup = this.fb.group({
-    cpf: ['', [Validators.required]],
+    cpf: ['', [Validators.required, cpfFieldValidator()]],
   });
 
   selectedFile: File | null = null;

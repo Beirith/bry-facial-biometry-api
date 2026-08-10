@@ -17,6 +17,9 @@
       <mat-error *ngIf="userForm.get('cpf')?.hasError('required')">
         Obrigatório
       </mat-error>
+      <mat-error *ngIf="userForm.get('cpf')?.hasError('onlyNumbers')">
+        O CPF deve conter 11 números
+      </mat-error>
     </mat-form-field>
 
     <div class="file-upload">
