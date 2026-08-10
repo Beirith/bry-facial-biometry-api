@@ -78,26 +78,26 @@ public class UserController {
 
     @PostMapping(value = "/batch", consumes = "multipart/form-data")
     public ResponseEntity<List<UserBatchResultDTO>> createBatch(
-            @RequestParam String usersData,
+            @RequestParam String users,
             @RequestParam List<MultipartFile> pictures
     ) {
-        List<UserCreateBatchDTO> users = parseUsersData(usersData);
-        List<byte[]> pictureBytesList = readPictures(users, pictures, false);
+        List<UserCreateBatchDTO> newUsers = parseUsersData(users);
+        List<byte[]> pictureBytesList = readPictures(newUsers, pictures, false);
 
-        List<UserBatchResultDTO> results = userBatchService.createBatch(users, pictureBytesList);
+        List<UserBatchResultDTO> results = userBatchService.createBatch(newUsers, pictureBytesList);
 
         return ResponseEntity.ok(results);
     }
 
     @PutMapping(value = "/batch", consumes = "multipart/form-data")
     public ResponseEntity<List<UserBatchResultDTO>> updateBatch(
-            @RequestParam String usersData,
+            @RequestParam String users,
             @RequestParam List<MultipartFile> pictures
     ) {
-        List<UserCreateBatchDTO> users = parseUsersData(usersData);
-        List<byte[]> pictureBytesList = readPictures(users, pictures, true);
+        List<UserCreateBatchDTO> updatedUsers = parseUsersData(users);
+        List<byte[]> pictureBytesList = readPictures(updatedUsers, pictures, true);
 
-        List<UserBatchResultDTO> response = userBatchService.updateBatch(users, pictureBytesList);
+        List<UserBatchResultDTO> response = userBatchService.updateBatch(updatedUsers, pictureBytesList);
 
         return ResponseEntity.ok(response);
     }
