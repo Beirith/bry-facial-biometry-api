@@ -17,7 +17,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>CPF</mat-label>
-          <input matInput formControlName="cpf" />
+          <input matInput formControlName="cpf"/>
           <mat-error *ngIf="group.get('cpf')?.hasError('required')">
             Obrigatório
           </mat-error>
@@ -33,6 +33,8 @@
           <input #fileInput type="file" accept="image/*" (change)="onFileSelected(i, $event)" hidden />
           <span *ngIf="selectedFiles[i]">{{ selectedFiles[i]?.name }}</span>
         </div>
+
+        <p class="field-error" *ngIf="isPictureMissing(i)">Selecione uma foto para este usuário</p>
 
         <button mat-stroked-button color="warn" type="button" (click)="removeUser(i)" *ngIf="userGroups.length > 1">
           Remover

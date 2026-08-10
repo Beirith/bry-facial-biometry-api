@@ -29,6 +29,7 @@ export class UserBatchCreate {
   results = signal<BatchResult[] | null>(null);
   error = signal<string | null>(null);
   submitting = signal(false);
+  submitted = signal(false);
 
   constructor(
     private userService: UserService,
@@ -70,13 +71,15 @@ export class UserBatchCreate {
   }
 
   onSubmit(): void {
+    this.submitted.set(true);
+
     if (this.usersFormArray.invalid) {
       this.error.set('Preencha nome e CPF de todos os usuários.');
       return;
     }
 
     if (this.selectedFiles.some(file => file === null)) {
-      this.error.set('Selecione uma foto para cada usuário.');
+      this.error.set('Anexe uma foto para cada usuário.');
       return;
     }
 
@@ -101,6 +104,10 @@ export class UserBatchCreate {
         this.submitting.set(false);
       }
     });
+  }
+
+  isPictureMissing(index: number): boolean {
+    return this.submitted() && this.selectedFiles[index] === null
   }
 
   goHome(): void {

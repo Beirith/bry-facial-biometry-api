@@ -27,3 +27,9 @@ form {
 button[mat-button] {
   margin-top: 32px;
 }
+
+.field-error {
+  color: #c62828;
+  font-size: 13px;
+  margin: 4px 0;
+}
