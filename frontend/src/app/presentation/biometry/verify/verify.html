@@ -16,7 +16,7 @@
 
     <div class="file-upload">
       <button mat-stroked-button type="button" (click)="fileInput.click()">
-        📎 Selecionar foto
+        Aenxar foto
       </button>
       <input #fileInput type="file" accept="image/*" (change)="onPictureSelected($event)" hidden />
       <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
