@@ -39,6 +39,10 @@ export class UserService {
     return this.http.put<User>(`${this.baseUrl}/${id}`, formData);
   }
 
+  updateBatch(formData: FormData): Observable<BatchResult[]> {
+    return this.http.put<BatchResult[]>(`${this.baseUrl}/batch`, formData);
+  }
+
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }

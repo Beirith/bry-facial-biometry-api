@@ -1,23 +1,15 @@
 <div class="page-container">
-  <h1>Cadastro em lote</h1>
+  <h1>Atualização em lote</h1>
 
-  <form [formGroup]="createBatchForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="updateBatchForm" (ngSubmit)="onSubmit()">
 
     <div formArrayName="users">
       <div *ngFor="let group of userGroups; let i = index" [formGroupName]="i" class="user-block">
         <h3>Usuário {{ i + 1 }}</h3>
 
         <mat-form-field appearance="outline">
-          <mat-label>Nome</mat-label>
-          <input matInput formControlName="name" />
-          <mat-error *ngIf="group.get('name')?.hasError('required')">
-            Obrigatório
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
           <mat-label>CPF</mat-label>
-          <input matInput formControlName="cpf"/>
+          <input matInput formControlName="cpf" />
           <mat-error *ngIf="group.get('cpf')?.hasError('required')">
             Obrigatório
           </mat-error>
@@ -26,15 +18,18 @@
           </mat-error>
         </mat-form-field>
 
+        <mat-form-field appearance="outline">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+
         <div class="file-upload">
           <button mat-stroked-button type="button" (click)="fileInput.click()">
-            Aenxar foto
+            Aenxar foto (Opcional)
           </button>
           <input #fileInput type="file" accept="image/*" (change)="onFileSelected(i, $event)" hidden />
           <span *ngIf="selectedFiles[i]">{{ selectedFiles[i]?.name }}</span>
         </div>
-
-        <p class="field-error" *ngIf="isPictureMissing(i)">Selecione uma foto para este usuário</p>
 
         <button mat-stroked-button color="warn" type="button" (click)="removeUser(i)" *ngIf="userGroups.length > 1">
           Remover
@@ -47,7 +42,7 @@
     <p *ngIf="error()">{{ error() }}</p>
 
     <button mat-raised-button color="primary" type="submit" [disabled]="submitting()">
-      {{ submitting() ? 'Cadastrando...' : 'Cadastrar todos' }}
+      {{ submitting() ? 'Atualizando...' : 'Atualizar todos' }}
     </button>
 
   </form>
@@ -56,11 +51,11 @@
     <h2>Resultado</h2>
     <ul>
       <li *ngFor="let result of results()">
-        <span *ngIf="result.success"> {{ result.name }} ({{ result.cpf }}) — cadastrado com sucesso</span>
-        <span *ngIf="!result.success"> {{ result.name || 'Usuário' }} — erro: {{ result.error }}</span>
+        <span *ngIf="result.success">Usuário {{ result.name }}, CPF ({{ result.cpf }}) atualizado com sucesso</span>
+        <span *ngIf="!result.success">Erro: {{ result.error }}</span>
       </li>
     </ul>
   </div>
 
-  <button mat-button (click)="goHome()">← Voltar</button>
+  <button mat-button (click)="goBack()">← Voltar</button>
 </div>

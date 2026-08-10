@@ -7,6 +7,7 @@ import {Verify} from './presentation/biometry/verify/verify';
 import {Identify} from './presentation/biometry/identify/identify';
 import {UserBatchCreate} from './presentation/users/user-batch-create/user-batch-create';
 import {Home} from './presentation/home/home';
+import {UserBatchUpdate} from './presentation/users/user-batch-update/user-batch-update';
 
 export const routes: Routes = [
   {path: '', component: Home},
@@ -14,6 +15,7 @@ export const routes: Routes = [
   {path: 'users/create', component: UserCreate},
   {path: 'users/batch-create', component: UserBatchCreate},
   {path: 'users/edit/:id', component: UserEdit},
+  {path: 'users/batch-update', component: UserBatchUpdate},
   {path: 'users/:id', component: UserDetails},
   {path: 'verify', component: Verify},
   {path: 'identify', component: Identify},
