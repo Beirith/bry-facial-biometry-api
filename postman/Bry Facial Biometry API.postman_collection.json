@@ -41,13 +41,13 @@
               "formdata": [
                 {
                   "key": "name",
-                  "value": "Teste 1",
+                  "value": "Teste Cadastro Postman",
                   "type": "text",
                   "uuid": "34720db4-bfcd-4abe-b44b-01ed31ca2e19"
                 },
                 {
                   "key": "cpf",
-                  "value": "1",
+                  "value": "10748072942",
                   "type": "text",
                   "uuid": "61e8e97a-c488-44fd-963a-7961c48a1045"
                 },
@@ -55,7 +55,7 @@
                   "key": "picture",
                   "type": "file",
                   "uuid": "9c160e93-2122-41dc-8899-ab46f4490c24",
-                  "src": "/C:/Users/Isaque/Desktop/teste.jpeg"
+                  "value": null
                 }
               ]
             },
@@ -67,6 +67,85 @@
               "path": [
                 "api",
                 "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create batch",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "users",
+                  "value": "[{\"name\":\"João Criado Por Lote\",\"cpf\":\"11122233344\"},{\"name\":\"Maria Criada por Lote\",\"cpf\":\"55566677788\"}]",
+                  "type": "text",
+                  "uuid": "ad9dbf92-24c7-4ed0-a5ff-c0767062a4ee",
+                  "contentType": "application/json"
+                },
+                {
+                  "key": "pictures",
+                  "type": "file",
+                  "uuid": "f8d831e5-664a-4383-98d7-80f61986be03",
+                  "value": null
+                },
+                {
+                  "key": "pictures",
+                  "type": "file",
+                  "uuid": "10ce735b-d747-46bf-a981-7ef1e33aef88",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/batch",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "batch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update batch",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "users",
+                  "value": "[{\"cpf\":\"11122233344\",\"name\":\"Teste Atualizou o nome por lote\"}]",
+                  "type": "text",
+                  "uuid": "63a10c1d-874d-4376-a5ae-6e98a9bca359"
+                },
+                {
+                  "key": "pictures",
+                  "type": "file",
+                  "uuid": "307c0997-2394-4da2-a99c-67a4d39b9f0e",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/batch",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "batch"
               ]
             }
           },
@@ -143,7 +222,7 @@
               "formdata": [
                 {
                   "key": "name",
-                  "value": "Mudou",
+                  "value": "Request mudou o nome",
                   "type": "text",
                   "uuid": "91c6d362-70e1-4966-b686-5a0f665a10f4"
                 }
@@ -175,7 +254,7 @@
                   "key": "picture",
                   "type": "file",
                   "uuid": "7a538c92-22af-4fe9-9de4-5f6b0fc6ed59",
-                  "src": "/C:/Users/Isaque/Desktop/teste.jpeg"
+                  "value": null
                 }
               ]
             },
@@ -215,8 +294,75 @@
       ]
     },
     {
-      "name": "Errors",
-      "item": []
+      "name": "FacialTemplates",
+      "item": [
+        {
+          "name": "Verify",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "cpf",
+                  "value": "{{user_cpf}}",
+                  "type": "text",
+                  "uuid": "0e5fdeed-9741-4630-b5a5-b976dd00de48"
+                },
+                {
+                  "key": "picture",
+                  "type": "file",
+                  "uuid": "660f552d-69e9-479f-b92f-d425db05cbf7",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/facial-templates/verify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "facial-templates",
+                "verify"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Identify",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "picture",
+                  "type": "file",
+                  "uuid": "f616b73f-90dd-4d2b-ad5f-fe5a3cb38c43",
+                  "src": "/C:/Users/Isaque/Desktop/fotos/depoisRino.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/facial-templates/identify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "facial-templates",
+                "identify"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "event": [
