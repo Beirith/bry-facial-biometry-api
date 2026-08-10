@@ -1,0 +1,36 @@
+<div class="page-container">
+  <h1>Cadastrar usuário</h1>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name"/>
+      <mat-error *ngIf="userForm.get('name')?.hasError('required')">
+        Obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>CPF</mat-label>
+      <input matInput formControlName="cpf"/>
+      <mat-error *ngIf="userForm.get('cpf')?.hasError('required')">
+        Obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <div class="file-upload">
+      <button mat-stroked-button type="button" (click)="fileInput.click()">Anexar foto</button>
+      <input #fileInput type="file" accept="image/*" (change)="onPictureSelected($event)" hidden/>
+      <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+    </div>
+    <p *ngIf="error()">{{ error() }}</p>
+
+    <button mat-raised-button type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Cadastrando...' : 'Cadastrar' }}
+    </button>
+
+  </form>
+
+  <button mat-button (click)="goHome()">← Voltar</button>
+</div>

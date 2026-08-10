@@ -1,0 +1,32 @@
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.result-card {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-card.success {
+  background-color: #e8f5e9;
+  border: 1px solid #66bb6a;
+}
+
+.result-card.fail {
+  background-color: #ffebee;
+  border: 1px solid #ef5350;
+}
+
+.result-card p {
+  margin: 4px 0;
+}
+
+button[mat-button] {
+  margin-top: 32px;
+}

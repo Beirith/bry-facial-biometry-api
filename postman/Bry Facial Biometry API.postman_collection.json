@@ -1,0 +1,260 @@
+{
+  "info": {
+    "_postman_id": "894b842a-061c-4e22-bb8d-8d4963539ebe",
+    "name": "Bry Facial Biometry API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57174882",
+    "_collection_link": "https://go.postman.co/collection/57174882-894b842a-061c-4e22-bb8d-8d4963539ebe?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "if (pm.response.code === 201) {\r",
+                  "    pm.collectionVariables.set(\"user_id\", response.id);\r",
+                  "    console.log(\"user_id salvo:\", response.id);\r",
+                  "\r",
+                  "    pm.collectionVariables.set(\"user_cpf\", response.cpf);\r",
+                  "    console.log(\"user_cpf salvo:\", response.cpf);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Teste 1",
+                  "type": "text",
+                  "uuid": "34720db4-bfcd-4abe-b44b-01ed31ca2e19"
+                },
+                {
+                  "key": "cpf",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "61e8e97a-c488-44fd-963a-7961c48a1045"
+                },
+                {
+                  "key": "picture",
+                  "type": "file",
+                  "uuid": "9c160e93-2122-41dc-8899-ab46f4490c24",
+                  "src": "/C:/Users/Isaque/Desktop/teste.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find by CPF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users?cpf={{user_cpf}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "cpf",
+                  "value": "{{user_cpf}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update name",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Mudou",
+                  "type": "text",
+                  "uuid": "91c6d362-70e1-4966-b686-5a0f665a10f4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update picture",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "picture",
+                  "type": "file",
+                  "uuid": "7a538c92-22af-4fe9-9de4-5f6b0fc6ed59",
+                  "src": "/C:/Users/Isaque/Desktop/teste.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Errors",
+      "item": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "user_cpf",
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+<div class="page-container">
+  <h1>Detalhes do usuário</h1>
+
+  <p *ngIf="loading()">Carregando...</p>
+  <p *ngIf="error()">{{ error() }}</p>
+
+  <div *ngIf="!loading() && !error() && user()" class="detail-card">
+    <img [src]="pictureUrl" alt="Foto do usuário" />
+    <p><strong>Nome:</strong> {{ user()!.name }}</p>
+    <p><strong>CPF:</strong> {{ user()!.cpf }}</p>
+
+    <button mat-raised-button color="primary" (click)="editUser()">Editar</button>
+  </div>
+
+  <button mat-button (click)="goHome()">← Voltar</button>
+</div>

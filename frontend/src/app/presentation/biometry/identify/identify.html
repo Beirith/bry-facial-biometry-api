@@ -1,0 +1,32 @@
+<div class="page-container">
+  <h1>Identificação facial (1:n)</h1>
+
+  <div class="file-upload">
+    <button mat-stroked-button type="button" (click)="fileInput.click()">
+      📎 Selecionar foto
+    </button>
+    <input #fileInput type="file" accept="image/*" (change)="onPictureSelected($event)" hidden/>
+    <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+  </div>
+
+  <p *ngIf="error()">{{ error() }}</p>
+
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="submitting()">
+    {{ submitting() ? 'Identificando...' : 'Identificar' }}
+  </button>
+
+  <div *ngIf="result()" class="result-card" [class.success]="result()!.identified" [class.fail]="!result()!.identified">
+    <div *ngIf="result()!.identified">
+      <h2>Usuário identificado</h2>
+      <p><strong>Nome:</strong> {{ result()!.user!.name }}</p>
+      <p><strong>CPF:</strong> {{ result()!.user!.cpf }}</p>
+      <p><strong>Score:</strong> {{ result()!.score | number:'1.2-2' }}</p>
+    </div>
+    <div *ngIf="!result()!.identified">
+      <h2>Não identificado</h2>
+      <p><strong>Melhor score encontrado:</strong> {{ result()!.score | number:'1.2-2' }}</p>
+    </div>
+  </div>
+
+  <button mat-button (click)="goHome()">← Voltar</button>
+</div>

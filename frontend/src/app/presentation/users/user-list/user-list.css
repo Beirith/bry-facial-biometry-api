@@ -1,0 +1,36 @@
+button[mat-button] {
+  margin-top: 32px;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+}
+
+th:last-child,
+td:last-child {
+  text-align: right;
+}
+
+td button {
+  border-radius: 0;
+  font-size: 12px;
+  padding: 0 8px;
+  min-width: unset;
+  line-height: 32px;
+  margin-right: 8px;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #bbdefb;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #90caf9;
+}
