@@ -86,7 +86,7 @@ export class UserBatchCreate {
     const usersData = this.usersFormArray.value;
 
     const formData = new FormData();
-    formData.append('usersData', JSON.stringify(usersData));
+    formData.append('users', JSON.stringify(usersData));
     this.selectedFiles.forEach(file => {
       if (file) {
         formData.append('pictures', file);
