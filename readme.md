@@ -9,7 +9,14 @@ O projeto está dividido em duas grandes partes:
 ### Backend (`bry-facial-biometry/backend`)
 
 Desenvolvido em Java juntamente com o framework Spring Boot para a realização das operações de CRUD de usuários,
-biometria facial (verificação e identificação) e persistência de dados no PostgreSQL.
+biometria facial (verificação e identificação) e persistência de dados no PostgreSQL. 
+
+Nâo tive tempo para implementar um threshold parametrizável, então optei por deixar um valor padrão de 0.85, 
+definido no arquivo `application.properties`, na variável `biometry.similarity-threshold`.
+
+Também não tive tempo para melhorar o processamento do facial_template do usuário, de modo que as requisições 
+de criação estão demorando mais do que o esperado. 
+Minha ideia era adicionar threads, de maneira semelhante ao realizado no cadastro/atualização em lote.
 
 ### Frontend (`bry-facial-biometry/frontend`)
 
