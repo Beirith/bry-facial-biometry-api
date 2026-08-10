@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,14 +25,26 @@ public class UserBatchService {
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
     private final Validator validator;
 
-    public List<UserBatchResultDTO> createBatch(List<UserCreateBatchDTO> users, List<byte[]> pictures) {
+    public List<UserBatchResultDTO> createBatch(List<UserCreateBatchDTO> newUsersBatch, List<byte[]> pictures) {
+        return processBatch(newUsersBatch, pictures, this::processUser);
+    }
+
+    public List<UserBatchResultDTO> updateBatch(List<UserCreateBatchDTO> updatedUsersBatch, List<byte[]> pictures) {
+        return processBatch(updatedUsersBatch, pictures, this::processUpdate);
+    }
+
+    private List<UserBatchResultDTO> processBatch(
+            List<UserCreateBatchDTO> users,
+            List<byte[]> pictures,
+            BiFunction<UserCreateBatchDTO, byte[], UserBatchResultDTO> operation
+    ) {
         List<Future<UserBatchResultDTO>> futuresResults = new ArrayList<>();
 
         for (int i = 0; i < users.size(); i++) {
             UserCreateBatchDTO user = users.get(i);
             byte[] picture = pictures.get(i);
 
-            Future<UserBatchResultDTO> future = executor.submit(() -> processUser(user, picture));
+            Future<UserBatchResultDTO> future = executor.submit(() -> operation.apply(user, picture));
             futuresResults.add(future);
         }
 
@@ -82,6 +95,27 @@ public class UserBatchService {
             result.setSuccess(false);
             result.setName(user.getName());
             result.setCpf(user.getCpf());
+            result.setError(e.getMessage());
+        }
+
+        return result;
+    }
+
+    private UserBatchResultDTO processUpdate(UserCreateBatchDTO userData, byte[] picture) {
+        UserBatchResultDTO result = new UserBatchResultDTO();
+
+        try {
+            User user = userService.findByCpf(userData.getCpf());
+
+            User updated = userService.update(user.getId(), userData.getName(), picture);
+
+            result.setSuccess(true);
+            result.setName(updated.getName());
+            result.setCpf(updated.getCpf());
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setName(userData.getName());
+            result.setCpf(userData.getCpf());
             result.setError(e.getMessage());
         }
 

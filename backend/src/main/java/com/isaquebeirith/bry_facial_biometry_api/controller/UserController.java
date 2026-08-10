@@ -76,6 +76,32 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping(value = "/batch", consumes = "multipart/form-data")
+    public ResponseEntity<List<UserBatchResultDTO>> createBatch(
+            @RequestParam String usersData,
+            @RequestParam List<MultipartFile> pictures
+    ) {
+        List<UserCreateBatchDTO> users = parseUsersData(usersData);
+        List<byte[]> pictureBytesList = readPictures(users, pictures, false);
+
+        List<UserBatchResultDTO> results = userBatchService.createBatch(users, pictureBytesList);
+
+        return ResponseEntity.ok(results);
+    }
+
+    @PutMapping(value = "/batch", consumes = "multipart/form-data")
+    public ResponseEntity<List<UserBatchResultDTO>> updateBatch(
+            @RequestParam String usersData,
+            @RequestParam List<MultipartFile> pictures
+    ) {
+        List<UserCreateBatchDTO> users = parseUsersData(usersData);
+        List<byte[]> pictureBytesList = readPictures(users, pictures, true);
+
+        List<UserBatchResultDTO> response = userBatchService.updateBatch(users, pictureBytesList);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid UserUpdateDTO request) {
         String newName = request.getName();
@@ -92,39 +118,37 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(value = "/batch", consumes = "multipart/form-data")
-    public ResponseEntity<List<UserBatchResultDTO>> createBatch(
-            @RequestParam String usersData,
-            @RequestParam List<MultipartFile> pictures
-    ) {
-        List<UserCreateBatchDTO> users;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        userService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    private List<UserCreateBatchDTO> parseUsersData(String usersData) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            users = objectMapper.readValue(usersData, new TypeReference<>() {
-            });
+            return objectMapper.readValue(usersData, new TypeReference<List<UserCreateBatchDTO>>() {});
         } catch (Exception e) {
             throw new RuntimeException("Erro ao interpretar os dados dos usuários.");
         }
+    }
 
+    private List<byte[]> readPictures(List<UserCreateBatchDTO> users, List<MultipartFile> pictures, boolean allowEmpty) {
         if (users.size() != pictures.size()) {
             throw new RuntimeException("A quantidade de usuários não corresponde à quantidade de fotos enviadas.");
         }
 
         List<byte[]> pictureBytesList = new ArrayList<>();
         for (MultipartFile picture : pictures) {
-            pictureBytesList.add(getPictureBytes(picture));
+            if (allowEmpty && picture.isEmpty()) {
+                pictureBytesList.add(null);
+            } else {
+                pictureBytesList.add(getPictureBytes(picture));
+            }
         }
 
-        List<UserBatchResultDTO> results = userBatchService.createBatch(users, pictureBytesList);
-
-        return ResponseEntity.ok(results);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        userService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
+        return pictureBytesList;
     }
 
     private byte[] getPictureBytes(MultipartFile pictureFile) {
