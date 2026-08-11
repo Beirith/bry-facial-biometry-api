@@ -5,10 +5,12 @@ import {UserService} from '../../../data/services/user.service';
 import {NavigationService} from '../../../data/services/navigation.service';
 import {User} from '../../../data/models/user';
 import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {SelectionService} from '../../../data/services/selection.service';
 
 @Component({
   selector: 'app-user-list',
-  imports: [CommonModule, MatButtonModule],
+  imports: [CommonModule, MatButtonModule, MatCheckboxModule],
   templateUrl: './user-list.html',
   styleUrl: './user-list.css'
 })
@@ -16,10 +18,12 @@ export class UserList implements OnInit {
   users = signal<User[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
+  selectedIds = signal<Set<number>>(new Set());
 
   constructor(
     private userService: UserService,
     private navigationService: NavigationService,
+    private selectionService: SelectionService,
     private router: Router
   ) {
   }
@@ -37,31 +41,64 @@ export class UserList implements OnInit {
     });
   }
 
-  deleteUser(id: number): void {
-    const confirmed = confirm('Tem certeza que deseja excluir este usuário?');
+  toggleSelection(id: number): void {
+    const current = new Set(this.selectedIds());
+    if (current.has(id)) {
+      current.delete(id);
+    } else {
+      current.add(id);
+    }
+    this.selectedIds.set(current);
+  }
+
+  isSelected(id: number): boolean {
+    return this.selectedIds().has(id);
+  }
+
+  get hasSelection(): boolean {
+    return this.selectedIds().size > 0;
+  }
+
+  deleteSelected(): void {
+    const confirmed = confirm(`Tem certeza que deseja excluir ${this.selectedIds().size} usuário(s)?`);
     if (!confirmed) {
       return;
     }
 
-    this.userService.delete(id).subscribe({
-      next: () => {
-        this.users.set(this.users().filter(u => u.id !== id));
-      },
-      error: () => {
-        this.error.set('Erro ao excluir usuário.');
-      }
+    const idsToDelete = Array.from(this.selectedIds());
+    let completed = 0;
+
+    idsToDelete.forEach(id => {
+      this.userService.delete(id).subscribe({
+        next: () => {
+          completed++;
+          this.users.set(this.users().filter(u => u.id !== id));
+          if (completed === idsToDelete.length) {
+            this.selectedIds.set(new Set());
+          }
+        },
+        error: () => {
+          this.error.set('Erro ao excluir um ou mais usuários.');
+        }
+      });
     });
   }
 
-  editUser(id: number): void {
-    this.router.navigate(['/users/edit', id]);
+  updateSelected(): void {
+    const selectedUsers = this.users().filter(u => this.selectedIds().has(u.id));
+    this.selectionService.setSelection(selectedUsers);
+    this.router.navigate(['/users/batch-update']);
   }
 
   viewUser(id: number): void {
     this.router.navigate(['/users', id]);
   }
 
-  goBack(): void {
-    this.navigationService.goBack();
+  editUser(id: number): void {
+    this.router.navigate(['/users/edit', id]);
+  }
+
+  goHome(): void {
+    this.navigationService.goHome();
   }
 }

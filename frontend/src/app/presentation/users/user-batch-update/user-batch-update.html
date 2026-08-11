@@ -9,7 +9,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>CPF</mat-label>
-          <input matInput formControlName="cpf" />
+          <input matInput formControlName="cpf"/>
           <mat-error *ngIf="group.get('cpf')?.hasError('required')">
             Obrigatório
           </mat-error>
@@ -20,14 +20,14 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Novo nome</mat-label>
-          <input matInput formControlName="name" />
+          <input matInput formControlName="name"/>
         </mat-form-field>
 
         <div class="file-upload">
           <button mat-stroked-button type="button" (click)="fileInput.click()">
             Aenxar nova foto (Opcional)
           </button>
-          <input #fileInput type="file" accept="image/*" (change)="onFileSelected(i, $event)" hidden />
+          <input #fileInput type="file" accept="image/*" (change)="onFileSelected(i, $event)" hidden/>
           <span *ngIf="selectedFiles[i]">{{ selectedFiles[i]?.name }}</span>
         </div>
 
@@ -51,8 +51,9 @@
     <h2>Resultado</h2>
     <ul>
       <li *ngFor="let result of results()">
-        <span *ngIf="result.success">Usuário {{ result.name }}, CPF ({{ result.cpf }}) atualizado com sucesso</span>
-        <span *ngIf="!result.success">Erro: {{ result.error }}</span>
+        <span *ngIf="result.success">Usuário {{ result.name }}, CPF {{ result.cpf }} atualizado com sucesso</span>
+        <span *ngIf="!result.success">Erro ao atualizar usuário {{ result.name }}, CPF {{ result.cpf }}
+          : {{ result.error }}</span>
       </li>
     </ul>
   </div>

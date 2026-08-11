@@ -4,9 +4,19 @@
   <p *ngIf="loading()">Carregando...</p>
   <p *ngIf="error()">{{ error() }}</p>
 
+  <div class="batch-actions" *ngIf="hasSelection">
+    <button mat-raised-button color="primary" (click)="updateSelected()">
+      Atualizar selecionados ({{ selectedIds().size }})
+    </button>
+    <button mat-raised-button color="warn" (click)="deleteSelected()">
+      Excluir selecionados ({{ selectedIds().size }})
+    </button>
+  </div>
+
   <table *ngIf="!loading() && !error()">
     <thead>
     <tr>
+      <th></th>
       <th>ID</th>
       <th>Nome</th>
       <th>CPF</th>
@@ -15,17 +25,19 @@
     </thead>
     <tbody>
     <tr *ngFor="let user of users()">
+      <td>
+        <mat-checkbox [checked]="isSelected(user.id)" (change)="toggleSelection(user.id)"></mat-checkbox>
+      </td>
       <td>{{ user.id }}</td>
       <td>{{ user.name }}</td>
       <td>{{ user.cpf }}</td>
       <td>
-        <button mat-stroked-button color color="primary" (click)="viewUser(user.id)">Detalhes</button>
+        <button mat-stroked-button color="primary" (click)="viewUser(user.id)">Detalhes</button>
         <button mat-stroked-button color="primary" (click)="editUser(user.id)">Editar</button>
-        <button mat-stroked-button color="warn" (click)="deleteUser(user.id)">Excluir</button>
       </td>
     </tr>
     </tbody>
   </table>
 
-  <button mat-button (click)="goBack()">Voltar</button>
+  <button mat-button (click)="goHome()">← Voltar</button>
 </div>

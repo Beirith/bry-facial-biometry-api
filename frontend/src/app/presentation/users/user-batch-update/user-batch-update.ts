@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormArray, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -8,6 +8,7 @@ import {UserService} from '../../../data/services/user.service';
 import {NavigationService} from '../../../data/services/navigation.service';
 import {BatchResult} from '../../../data/models/batch-result';
 import {cpfFieldValidator} from '../../../shared/validator';
+import {SelectionService} from '../../../data/services/selection.service';
 
 @Component({
   selector: 'app-user-batch-update',
@@ -15,30 +16,44 @@ import {cpfFieldValidator} from '../../../shared/validator';
   templateUrl: './user-batch-update.html',
   styleUrl: './user-batch-update.css'
 })
-export class UserBatchUpdate {
+export class UserBatchUpdate implements OnInit {
   private fb = inject(FormBuilder);
   private navigationService = inject(NavigationService);
+  private selectionService = inject(SelectionService);
 
   updateBatchForm: FormGroup = this.fb.group({
-    users: this.fb.array([this.createUserGroup()])
+    users: this.fb.array([])
   });
 
-  selectedFiles: (File | null)[] = [null];
+  selectedFiles: (File | null)[] = [];
   submitted = signal(false);
 
   results = signal<BatchResult[] | null>(null);
   error = signal<string | null>(null);
   submitting = signal(false);
 
-  constructor(
-    private userService: UserService
-  ) {
+  constructor(private userService: UserService) {
   }
 
-  private createUserGroup(): FormGroup {
+  ngOnInit(): void {
+    const preSelected = this.selectionService.selectedUsers();
+
+    if (preSelected.length > 0) {
+      preSelected.forEach(user => {
+        this.usersFormArray.push(this.createUserGroup(user.cpf, user.name));
+        this.selectedFiles.push(null);
+      });
+      this.selectionService.clear();
+    } else {
+      this.usersFormArray.push(this.createUserGroup());
+      this.selectedFiles.push(null);
+    }
+  }
+
+  private createUserGroup(cpf: string = '', name: string = ''): FormGroup {
     return this.fb.group({
-      cpf: ['', [Validators.required, cpfFieldValidator()]],
-      name: [''],
+      cpf: [cpf, [Validators.required, cpfFieldValidator()]],
+      name: [name, [Validators.required]],
     });
   }
 
