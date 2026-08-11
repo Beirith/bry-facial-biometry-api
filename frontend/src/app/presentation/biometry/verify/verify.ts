@@ -71,7 +71,7 @@ export class Verify {
     });
   }
 
-  goHome(): void {
-    this.navigationService.goHome();
+  goBack(): void {
+    this.navigationService.goBack();
   }
 }

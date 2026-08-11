@@ -38,7 +38,7 @@ export class UserBatchUpdate {
   private createUserGroup(): FormGroup {
     return this.fb.group({
       cpf: ['', [Validators.required, cpfFieldValidator()]],
-      name: ['', [Validators.required]],
+      name: [''],
     });
   }
 
@@ -100,6 +100,6 @@ export class UserBatchUpdate {
   }
 
   goBack(): void {
-    this.navigationService.goHome();
+    this.navigationService.goBack();
   }
 }

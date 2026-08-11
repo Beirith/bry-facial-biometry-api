@@ -61,7 +61,7 @@ export class UserList implements OnInit {
     this.router.navigate(['/users', id]);
   }
 
-  goHome(): void {
-    this.navigationService.goHome();
+  goBack(): void {
+    this.navigationService.goBack();
   }
 }

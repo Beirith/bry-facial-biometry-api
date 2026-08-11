@@ -114,7 +114,7 @@ export class UserBatchCreate {
     return this.submitted() && this.selectedFiles[index] === null
   }
 
-  goHome(): void {
-    this.navigationService.goHome();
+  goBack(): void {
+    this.navigationService.goBack();
   }
 }

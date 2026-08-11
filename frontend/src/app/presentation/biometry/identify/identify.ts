@@ -54,7 +54,7 @@ export class Identify {
     });
   }
 
-  goHome(): void {
-    this.navigationService.goHome();
+  goBack(): void {
+    this.navigationService.goBack();
   }
 }

@@ -84,7 +84,7 @@ export class UserEdit implements OnInit {
     });
   }
 
-  goHome(): void {
-    this.navigationService.goHome();
+  goBack(): void {
+    this.navigationService.goBack();
   }
 }

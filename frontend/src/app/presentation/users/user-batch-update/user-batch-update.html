@@ -19,13 +19,13 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Nome</mat-label>
+          <mat-label>Novo nome</mat-label>
           <input matInput formControlName="name" />
         </mat-form-field>
 
         <div class="file-upload">
           <button mat-stroked-button type="button" (click)="fileInput.click()">
-            Aenxar foto (Opcional)
+            Aenxar nova foto (Opcional)
           </button>
           <input #fileInput type="file" accept="image/*" (change)="onFileSelected(i, $event)" hidden />
           <span *ngIf="selectedFiles[i]">{{ selectedFiles[i]?.name }}</span>

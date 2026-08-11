@@ -7,6 +7,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {cpfFieldValidator} from '../../../shared/validator';
+import {NavigationService} from '../../../data/services/navigation.service';
 
 @Component({
   selector: 'app-user-create',
@@ -16,6 +17,7 @@ import {cpfFieldValidator} from '../../../shared/validator';
 })
 export class UserCreate {
   private fb = inject(FormBuilder);
+  private navigationService = inject(NavigationService);
 
   userForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
@@ -70,7 +72,7 @@ export class UserCreate {
     });
   }
 
-  goHome(): void {
-    this.router.navigate(['/']);
+  goBack(): void {
+    this.navigationService.goBack();
   }
 }

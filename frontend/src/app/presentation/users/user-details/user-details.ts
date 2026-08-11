@@ -47,7 +47,7 @@ export class UserDetails implements OnInit {
     this.router.navigate(['/users/edit', this.user()!.id]);
   }
 
-  goHome(): void {
-    this.navigationService.goHome();
+  goBack(): void {
+    this.navigationService.goBack();
   }
 }
