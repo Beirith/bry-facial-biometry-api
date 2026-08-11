@@ -78,6 +78,11 @@ public class AppExceptionHandler {
         return generateResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(FacialTemplateNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleFacialTemplateNotFound(MissingPictureException e) {
+        return generateResponseEntity(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("status", status.value());
