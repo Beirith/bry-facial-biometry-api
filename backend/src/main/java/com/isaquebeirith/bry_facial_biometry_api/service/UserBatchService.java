@@ -2,8 +2,10 @@ package com.isaquebeirith.bry_facial_biometry_api.service;
 
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserBatchResultDTO;
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserCreateBatchDTO;
+import com.isaquebeirith.bry_facial_biometry_api.exception.InvalidCpfException;
 import com.isaquebeirith.bry_facial_biometry_api.exception.MissingPictureException;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
+import com.isaquebeirith.bry_facial_biometry_api.util.CpfValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +76,10 @@ public class UserBatchService {
                 String errorMessage = violations.stream().map(ConstraintViolation::getMessage)
                         .collect(Collectors.joining(", "));
                 throw new RuntimeException(errorMessage);
+            }
+
+            if (!CpfValidator.isValid(user.getCpf())) {
+                throw new InvalidCpfException("O CPF fornecido é inválido.");
             }
 
             if (picture == null || picture.length == 0) {

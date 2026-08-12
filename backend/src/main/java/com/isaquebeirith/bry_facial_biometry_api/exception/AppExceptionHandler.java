@@ -83,6 +83,11 @@ public class AppExceptionHandler {
         return generateResponseEntity(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
+    @ExceptionHandler(InvalidCpfException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidCpf(InvalidCpfException e) {
+        return generateResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("status", status.value());

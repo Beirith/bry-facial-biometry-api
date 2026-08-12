@@ -49,8 +49,10 @@ export class UserBatchUpdate implements OnInit {
   }
 
   private createUserGroup(cpf: string = '', name: string = ''): FormGroup {
+    const isPreFilled = cpf !== '';
+
     return this.fb.group({
-      cpf: [cpf, [Validators.required, cpfFieldValidator()]],
+      cpf: [{ value: cpf, disabled: isPreFilled }, [Validators.required, cpfFieldValidator()]],
       name: [name, [Validators.required]],
     });
   }
@@ -88,7 +90,8 @@ export class UserBatchUpdate implements OnInit {
       return;
     }
 
-    const usersData = this.usersFormArray.value;
+    // Necessário quando o campo é desabilitado (seleção lista de usuários)
+    const usersData = this.usersFormArray.getRawValue();
 
     const formData = new FormData();
     formData.append('users', JSON.stringify(usersData));

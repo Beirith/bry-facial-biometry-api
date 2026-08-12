@@ -1,11 +1,9 @@
 package com.isaquebeirith.bry_facial_biometry_api.service;
 
-import com.isaquebeirith.bry_facial_biometry_api.exception.DuplicateCpfException;
-import com.isaquebeirith.bry_facial_biometry_api.exception.InvalidPictureException;
-import com.isaquebeirith.bry_facial_biometry_api.exception.InvalidUpdateException;
-import com.isaquebeirith.bry_facial_biometry_api.exception.UserNotFoundException;
+import com.isaquebeirith.bry_facial_biometry_api.exception.*;
 import com.isaquebeirith.bry_facial_biometry_api.model.User;
 import com.isaquebeirith.bry_facial_biometry_api.repository.UserRepository;
+import com.isaquebeirith.bry_facial_biometry_api.util.CpfValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,11 +27,15 @@ public class UserService {
 
     public User findByCpf(String cpf) {
         return userRepository.findByCpf(cpf).orElseThrow(
-                () -> new UserNotFoundException("Não há nenhum usuário cadastrado com o CPF " + cpf));
+                () -> new UserNotFoundException("Não há nenhum usuárwio cadastrado com o CPF " + cpf));
     }
 
     @Transactional
     public User create(User user)  {
+        if (!CpfValidator.isValid(user.getCpf())) {
+            throw new InvalidCpfException("O CPF fornecido é inválido.");
+        }
+
         if (userRepository.findByCpf(user.getCpf()).isPresent()) {
             throw new DuplicateCpfException("Já existe um usuário com esse CPF cadastrado no sistema.");
         }

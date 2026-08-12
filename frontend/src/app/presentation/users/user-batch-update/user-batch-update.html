@@ -9,12 +9,18 @@
 
         <mat-form-field appearance="outline">
           <mat-label>CPF</mat-label>
-          <input matInput formControlName="cpf"/>
-          <mat-error *ngIf="group.get('cpf')?.hasError('required')">
+          <input matInput formControlName="cpf" maxlength="11" />
+          <mat-error *ngIf="userForm.get('cpf')?.hasError('required')">
             Obrigatório
           </mat-error>
-          <mat-error *ngIf="group.get('cpf')?.hasError('onlyNumbers')">
-            O CPF deve conter 11 números
+          <mat-error *ngIf="userForm.get('cpf')?.hasError('onlyNumbers')">
+            CPF deve conter apenas números
+          </mat-error>
+          <mat-error *ngIf="userForm.get('cpf')?.hasError('invalidLength')">
+            CPF deve ter exatamente 11 dígitos
+          </mat-error>
+          <mat-error *ngIf="userForm.get('cpf')?.hasError('invalidCpf')">
+            CPF inválido
           </mat-error>
         </mat-form-field>
 

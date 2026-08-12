@@ -26,11 +26,11 @@ public class SeedRunner implements CommandLineRunner {
         }
 
         String[][] seedUsers = {
-                {"John Lennon", "11111111111", "seed-beatles/john.jpg"},
-                {"Paul McCartney", "22222222222", "seed-beatles/paul.jpg"},
-                {"George Harrison", "33333333333", "seed-beatles/george.jpg"},
-                {"Ringo Starr", "44444444444", "seed-beatles/ringo.jpg"},
-                {"Isaque Beirith", "55555555555", "seed-beatles/isaque.jpg"}
+                {"John Lennon", "13013566973", "seed-beatles/john.jpg"},
+                {"Paul McCartney", "85400889913", "seed-beatles/paul.jpg"},
+                {"George Harrison", "72349081966", "seed-beatles/george.jpg"},
+                {"Ringo Starr", "99368780943", "seed-beatles/ringo.jpg"},
+                {"Isaque Beirith", "10748072942", "seed-beatles/isaque.jpg"}
         };
 
         for (String[] seedUser : seedUsers) {
