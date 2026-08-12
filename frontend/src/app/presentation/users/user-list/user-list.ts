@@ -95,4 +95,12 @@ export class UserList implements OnInit {
   editUser(id: number): void {
     this.router.navigate(['/users/edit', id]);
   }
+
+  createUser(): void {
+    this.router.navigate(['/users/create']);
+  }
+
+  verifyUser(cpf: string): void {
+    this.router.navigate(['/verify'], { queryParams: { cpf } });
+  }
 }
