@@ -34,3 +34,16 @@ tbody tr:nth-child(odd) {
 tbody tr:nth-child(even) {
   background-color: #90caf9;
 }
+
+.batch-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.selection-actions {
+  display: flex;
+  gap: 12px;
+}

@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import {FacialTemplateService} from '../../../data/services/facial-template.service';
@@ -8,6 +8,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {cpfFieldValidator} from '../../../shared/validator';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-verify',
@@ -17,6 +18,7 @@ import {cpfFieldValidator} from '../../../shared/validator';
 })
 export class Verify {
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
 
   verifyForm: FormGroup = this.fb.group({
     cpf: ['', [Validators.required, cpfFieldValidator()]],
@@ -26,6 +28,13 @@ export class Verify {
   result = signal<VerificationResult | null>(null);
   error = signal<string | null>(null);
   submitting = signal(false);
+
+  ngOnInit(): void {
+    const cpfFromQuery = this.route.snapshot.queryParamMap.get('cpf');
+    if (cpfFromQuery) {
+      this.verifyForm.patchValue({ cpf: cpfFromQuery });
+    }
+  }
 
   constructor
   (private facialTemplateService: FacialTemplateService,

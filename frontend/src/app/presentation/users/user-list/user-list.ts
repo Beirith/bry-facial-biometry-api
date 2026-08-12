@@ -2,7 +2,6 @@ import {Component, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Router} from '@angular/router';
 import {UserService} from '../../../data/services/user.service';
-import {NavigationService} from '../../../data/services/navigation.service';
 import {User} from '../../../data/models/user';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -22,7 +21,6 @@ export class UserList implements OnInit {
 
   constructor(
     private userService: UserService,
-    private navigationService: NavigationService,
     private selectionService: SelectionService,
     private router: Router
   ) {
@@ -98,7 +96,11 @@ export class UserList implements OnInit {
     this.router.navigate(['/users/edit', id]);
   }
 
-  goHome(): void {
-    this.navigationService.goHome();
+  createUser(): void {
+    this.router.navigate(['/users/create']);
+  }
+
+  verifyUser(cpf: string): void {
+    this.router.navigate(['/verify'], { queryParams: { cpf } });
   }
 }

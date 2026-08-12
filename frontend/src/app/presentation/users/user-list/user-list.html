@@ -1,19 +1,24 @@
 <div class="page-container">
-  <h1>Usuários cadastrados</h1>
+  <div class="header">
+    <h1>Usuários cadastrados</h1>
+  </div>
 
   <p *ngIf="loading()">Carregando...</p>
   <p *ngIf="error()">{{ error() }}</p>
 
-  <div class="batch-actions" *ngIf="hasSelection">
-    <button mat-raised-button color="primary" (click)="updateSelected()">
-      Atualizar selecionados ({{ selectedIds().size }})
-    </button>
-    <button mat-raised-button color="warn" (click)="deleteSelected()">
-      Excluir selecionados ({{ selectedIds().size }})
-    </button>
+  <div class="batch-actions">
+    <button mat-raised-button color="primary" (click)="createUser()">+</button>
+    <div class="selection-actions">
+      <button mat-raised-button color="primary" [disabled]="!hasSelection" (click)="updateSelected()">
+        Atualizar ({{ selectedIds().size }})
+      </button>
+      <button mat-raised-button color="primary" [disabled]="!hasSelection" (click)="deleteSelected()">
+        Excluir ({{ selectedIds().size }})
+      </button>
+    </div>
   </div>
 
-  <table *ngIf="!loading() && !error()">
+  <table *ngIf="!loading() && !error() && users().length > 0">
     <thead>
     <tr>
       <th></th>
@@ -34,10 +39,14 @@
       <td>
         <button mat-stroked-button color="primary" (click)="viewUser(user.id)">Detalhes</button>
         <button mat-stroked-button color="primary" (click)="editUser(user.id)">Editar</button>
+        <button mat-stroked-button color="primary" (click)="verifyUser(user.cpf)">Verificar</button>
       </td>
     </tr>
     </tbody>
   </table>
 
-  <button mat-button (click)="goHome()">← Voltar</button>
+  <p *ngIf="!loading() && !error() && users().length === 0" class="empty-message">
+    Nenhum usuário cadastrado.
+    Cadastre usuários por meio do botão '+' ou pela aba 'Cadastrar'.
+  </p>
 </div>

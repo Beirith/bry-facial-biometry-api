@@ -1,0 +1,29 @@
+.custom-navbar {
+  background-color: #1565c0;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex: 1;
+}
+
+.nav-links a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.nav-links a {
+  color: white;
+}
+
+.active {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+}

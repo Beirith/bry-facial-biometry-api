@@ -5,7 +5,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {UserService} from '../../../data/services/user.service';
-import {NavigationService} from '../../../data/services/navigation.service';
 import {BatchResult} from '../../../data/models/batch-result';
 import {cpfFieldValidator} from '../../../shared/validator';
 import {SelectionService} from '../../../data/services/selection.service';
@@ -18,7 +17,6 @@ import {SelectionService} from '../../../data/services/selection.service';
 })
 export class UserBatchUpdate implements OnInit {
   private fb = inject(FormBuilder);
-  private navigationService = inject(NavigationService);
   private selectionService = inject(SelectionService);
 
   updateBatchForm: FormGroup = this.fb.group({
@@ -112,9 +110,5 @@ export class UserBatchUpdate implements OnInit {
         this.submitting.set(false);
       }
     });
-  }
-
-  goBack(): void {
-    this.navigationService.goBack();
   }
 }

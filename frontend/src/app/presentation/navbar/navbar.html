@@ -1,0 +1,10 @@
+<mat-toolbar class="custom-navbar">
+  <div class="nav-links">
+    <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Usuários</a>
+    <a mat-button routerLink="/users/create" routerLinkActive="active">Cadastrar</a>
+    <a mat-button routerLink="/users/batch-create" routerLinkActive="active">Cadastrar em lote</a>
+    <a mat-button routerLink="/users/batch-update" routerLinkActive="active">Atualizar em lote</a>
+    <a mat-button routerLink="/verify" routerLinkActive="active">Verificação (1:1)</a>
+    <a mat-button routerLink="/identify" routerLinkActive="active">Identificação (1:n)</a>
+  </div>
+</mat-toolbar>
