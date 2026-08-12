@@ -6,6 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,7 @@ public class AppExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
-        List<String> errorsList = e.getBindingResult().getFieldErrors().stream().
-                map(FieldError::getDefaultMessage).toList();
+        List<String> errorsList = e.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage).toList();
 
         String errorsMessages = String.join(", ", errorsList);
 
@@ -86,6 +86,13 @@ public class AppExceptionHandler {
     @ExceptionHandler(InvalidCpfException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidCpf(InvalidCpfException e) {
         return generateResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException e) {
+        PictureFileTooLargeException customException = new PictureFileTooLargeException("O arquivo enviado excede o tamanho máximo permitido.");
+
+        return generateResponseEntity(HttpStatus.CONTENT_TOO_LARGE, customException.getMessage());
     }
 
     private ResponseEntity<Map<String, Object>> generateResponseEntity(HttpStatus status, Object message) {

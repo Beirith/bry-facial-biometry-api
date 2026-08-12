@@ -65,7 +65,12 @@ export class UserCreate {
       },
       error: (err) => {
         this.submitting.set(false);
-        this.error.set(err.error?.message || 'Erro ao cadastrar usuário.');
+
+        if (err.status === 0) {
+          this.error.set('O arquivo é muito grande ou houve um problema de conexão. Tente uma foto menor.');
+        } else {
+          this.error.set(err.error?.message || 'Erro ao cadastrar usuário.');
+        }
       }
     });
   }

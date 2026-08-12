@@ -27,7 +27,7 @@ public class UserService {
 
     public User findByCpf(String cpf) {
         return userRepository.findByCpf(cpf).orElseThrow(
-                () -> new UserNotFoundException("Não há nenhum usuárwio cadastrado com o CPF " + cpf));
+                () -> new UserNotFoundException("Não há nenhum usuário cadastrado com o CPF " + cpf));
     }
 
     @Transactional

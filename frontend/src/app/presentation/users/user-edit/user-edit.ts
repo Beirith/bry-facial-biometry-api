@@ -79,7 +79,12 @@ export class UserEdit implements OnInit {
       },
       error: (err) => {
         this.submitting.set(false);
-        this.error.set(err.error?.message || 'Erro ao atualizar usuário.');
+
+        if (err.status === 0) {
+          this.error.set('O arquivo é muito grande ou houve um problema de conexão. Tente uma foto menor.');
+        } else {
+          this.error.set(err.error?.message || 'Erro ao editar usuário.');
+        }
       }
     });
   }

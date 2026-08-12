@@ -109,8 +109,13 @@ export class UserBatchUpdate implements OnInit {
         this.submitting.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Erro ao atualizar usuários.');
         this.submitting.set(false);
+
+        if (err.status === 0) {
+          this.error.set('Um dos arquivos é muito grande ou houve um problema de conexão. Tente uma foto menor.');
+        } else {
+          this.error.set(err.error?.message || 'Erro ao editar usuários.');
+        }
       }
     });
   }

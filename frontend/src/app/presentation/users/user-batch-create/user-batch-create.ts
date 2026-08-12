@@ -102,8 +102,13 @@ export class UserBatchCreate {
         this.submitting.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Erro ao cadastrar usuários.');
         this.submitting.set(false);
+
+        if (err.status === 0) {
+          this.error.set('Um dos arquivos é muito grande ou houve um problema de conexão. Tente uma foto menor.');
+        } else {
+          this.error.set(err.error?.message || 'Erro ao cadastrar usuários.');
+        }
       }
     });
   }
