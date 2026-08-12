@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <table *ngIf="!loading() && !error()">
+  <table *ngIf="!loading() && !error() && users().length > 0">
     <thead>
     <tr>
       <th></th>
@@ -44,4 +44,9 @@
     </tr>
     </tbody>
   </table>
+
+  <p *ngIf="!loading() && !error() && users().length === 0" class="empty-message">
+    Nenhum usuário cadastrado.
+    Cadastre usuários por meio do botão '+' ou pela aba 'Cadastrar'.
+  </p>
 </div>
