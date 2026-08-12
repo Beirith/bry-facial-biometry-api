@@ -134,6 +134,47 @@ Após isso, é possível acessar a aplicação em: http://localhost:4200
 Uma coleção do Postman com os endpoints está disponível em
 `bry-facial-biometry/postman/Bry Facial Biometry API.postman_collection.json`.
 
+## Testando a API (Postman)
+
+Uma collection completa está disponível em [
+`postman/Bry Facial Biometry API.postman_collection.json`](postman/Bry%20Facial%20Biometry%20API.postman_collection.json).
+Para importar: Postman → File → Import → selecione o arquivo.
+
+A variável `base_url` já vem configurada como `http://localhost:8080`. As variáveis `user_id` e `user_cpf` são
+preenchidas automaticamente pela requisição "Create User" (via script na aba Tests), e reaproveitadas pelas demais
+requisições.
+
+### Pasta `Users/`
+
+| Requisição       | Método   | Rota                 | Descrição                                                                                                                                             |
+|------------------|----------|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Create User      | `POST`   | `/api/users`         | Cadastra um usuário individual (nome, CPF, foto). Gera o template facial automaticamente.                                                             |
+| List Users       | `GET`    | `/api/users`         | Lista todos os usuários cadastrados.                                                                                                                  |
+| Find User by ID  | `GET`    | `/api/users/{id}`    | Busca um usuário específico pelo identificador técnico.                                                                                               |
+| Find User by CPF | `GET`    | `/api/users?cpf=...` | Busca um usuário pelo CPF.                                                                                                                            |
+| Update User      | `PUT`    | `/api/users/{id}`    | Atualiza nome e/ou foto de um usuário existente (ambos opcionais, mas pelo menos um é obrigatório).                                                   |
+| Delete User      | `DELETE` | `/api/users/{id}`    | Remove um usuário e seu template facial associado.                                                                                        |
+| Create Batch     | `POST`   | `/api/users/batch`   | Cadastra múltiplos usuários simultaneamente, cada um processado em uma thread separada. Retorna o resultado individual de cada item (sucesso ou erro). |
+| Update Batch     | `PUT`    | `/api/users/batch`   | Atualiza múltiplos usuários simultaneamente, identificados por CPF. É necessário fornecer uma foto (parametro "pictures") para cada usuário.          |
+
+### Pasta `Facial Templates/`
+
+| Requisição | Método | Rota                             | Descrição                                                                                                                                                           |
+|------------|--------|----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Verify     | `POST` | `/api/facial-templates/verify`   | Verificação 1:1 — compara uma foto enviada com a foto cadastrada de um usuário específico (identificado por CPF). Retorna `matches` (booleano) e `similarityScore`. |
+| Identify   | `POST` | `/api/facial-templates/identify` | Identificação 1:n — compara uma foto enviada com todos os usuários cadastrados, retornando o de maior similaridade (se acima do threshold).                         |
+
+### Cenários de erro testados
+
+| Cenário                      | Requisição base          | Resultado esperado                    |
+|------------------------------|--------------------------|---------------------------------------|
+| CPF duplicado                | Create User              | `409 Conflict`                        |
+| Foto sem rosto detectável    | Create User              | `400`/`422`, mensagem específica      |
+| Foto com múltiplos rostos    | Create User              | `400`/`422`, mensagem específica      |
+| Campos obrigatórios ausentes | Create User              | `400 Bad Request`, lista de mensagens |
+| Usuário inexistente          | Find User by ID / Verify | `404 Not Found`                       |
+| Arquivo maior que o limite   | Create User              | `413 Content Too Large`               |
+
 ## Dados de exemplo automáticos
 
 Ao subir a aplicação com o banco vazio, um `CommandLineRunner` (`UserSeedRunner`) cadastra automaticamente 5 usuários de
@@ -144,11 +185,14 @@ exemplo, cada um com sua respectiva foto.
 
 ## Cadastro e atualização em lote
 
-Além do CRUD individual, a API permite processar múltiplos usuários numa única requisição, com cada um processado em uma thread separada (pool dedicado de 5 threads):
+Além do CRUD individual, a API permite processar múltiplos usuários numa única requisição, com cada um processado em uma
+thread separada (pool dedicado de 5 threads):
 
 - `POST /api/users/batch` — cadastro em lote
 - `PUT /api/users/batch` — atualização em lote (identificação por CPF)
 
-Cada item do lote é processado de forma independente — se um usuário falhar (CPF duplicado, foto inválida, etc.), os demais continuam sendo processados normalmente, e o resultado final indica sucesso/falha por item.
+Cada item do lote é processado de forma independente — se um usuário falhar (CPF duplicado, foto inválida, etc.), os
+demais continuam sendo processados normalmente, e o resultado final indica sucesso/falha por item.
 
-A tela de listagem permite selecionar múltiplos usuários (via checkbox) e enviá-los diretamente para a tela de atualização em lote, já com CPF e nome pré-preenchidos.
+A tela de listagem permite selecionar múltiplos usuários (via checkbox) e enviá-los diretamente para a tela de
+atualização em lote, já com CPF e nome pré-preenchidos.
