@@ -61,7 +61,7 @@ export class UserCreate {
     this.userService.create(formData).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.router.navigate(['/users']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.submitting.set(false);

@@ -75,7 +75,7 @@ export class UserEdit implements OnInit {
     this.userService.update(this.userId, formData).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.router.navigate(['/users']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.submitting.set(false);
@@ -83,6 +83,7 @@ export class UserEdit implements OnInit {
       }
     });
   }
+
 
   goBack(): void {
     this.navigationService.goBack();
