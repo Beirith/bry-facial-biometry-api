@@ -10,8 +10,7 @@ import {Home} from './presentation/home/home';
 import {UserBatchUpdate} from './presentation/users/user-batch-update/user-batch-update';
 
 export const routes: Routes = [
-  {path: '', component: Home},
-  {path: 'users', component: UserList},
+  {path: '', component: UserList},
   {path: 'users/create', component: UserCreate},
   {path: 'users/batch-create', component: UserBatchCreate},
   {path: 'users/edit/:id', component: UserEdit},
