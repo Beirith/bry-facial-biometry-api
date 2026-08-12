@@ -70,7 +70,6 @@ public class UserBatchService {
         try {
             Set<ConstraintViolation<UserCreateBatchDTO>> violations = validator.validate(user);
 
-            // ToDo: padronizar erro
             if (!violations.isEmpty()) {
                 String errorMessage = violations.stream().map(ConstraintViolation::getMessage)
                         .collect(Collectors.joining(", "));
@@ -91,6 +90,13 @@ public class UserBatchService {
             result.setSuccess(true);
             result.setName(created.getName());
             result.setCpf(created.getCpf());
+        }
+        // Resolve condição de corrida ao tentar cadastrar mais de um usuário com o mesmo cpf no mesmo lote
+        catch (org.springframework.dao.DataIntegrityViolationException e) {
+            result.setSuccess(false);
+            result.setName(user.getName());
+            result.setCpf(user.getCpf());
+            result.setError("Já existe um usuário cadastrado com esse CPF nesse lote.");
         } catch (Exception e) {
             result.setSuccess(false);
             result.setName(user.getName());

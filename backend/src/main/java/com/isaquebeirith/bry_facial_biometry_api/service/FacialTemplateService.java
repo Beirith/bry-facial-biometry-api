@@ -2,7 +2,7 @@ package com.isaquebeirith.bry_facial_biometry_api.service;
 
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
-import com.isaquebeirith.bry_facial_biometry_api.biometry.comparation.FacialTemplateComparator;
+import com.isaquebeirith.bry_facial_biometry_api.biometry.comparison.FacialTemplateComparator;
 import com.isaquebeirith.bry_facial_biometry_api.biometry.generation.FacialTemplateGenerator;
 import com.isaquebeirith.bry_facial_biometry_api.dto.IdentificationResponseDTO;
 import com.isaquebeirith.bry_facial_biometry_api.dto.UserResponseDTO;
@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,10 @@ public class FacialTemplateService {
 
     private final FacialTemplateGenerator facialTemplateGenerator;
     private final FacialTemplateComparator facialTemplateComparator;
+
+    // Necessário para parallelStream()
+    private record BestMatch(User user, float score) {
+    }
 
     public void createFacialTemplate(User user) {
         FacialTemplate newFacialTemplate = new FacialTemplate();
@@ -93,18 +98,16 @@ public class FacialTemplateService {
 
         List<FacialTemplate> allTemplates = facialTemplateRepository.findAll();
 
-        float bestScore = 0.0F;
-        User bestUser = null;
+        Optional<BestMatch> bestMatch = allTemplates.parallelStream()
+                .map(template -> {
+                    float[] storedVector = FeatureVectorConverter.toFloatArray(template.getFeatureVector());
+                    float score = facialTemplateComparator.calculateSimilarity(storedVector, newVector);
+                    return new BestMatch(template.getUser(), score);
+                })
+                .max(Comparator.comparingDouble(BestMatch::score));
 
-        for (FacialTemplate template : allTemplates) {
-            float[] storedVector = FeatureVectorConverter.toFloatArray(template.getFeatureVector());
-            float score = facialTemplateComparator.calculateSimilarity(storedVector, newVector);
-
-            if (score > bestScore) {
-                bestScore = score;
-                bestUser = template.getUser();
-            }
-        }
+        float bestScore = bestMatch.map(BestMatch::score).orElse(0.0f);
+        User bestUser = bestMatch.map(BestMatch::user).orElse(null);
 
         IdentificationResponseDTO response = new IdentificationResponseDTO();
 
@@ -125,10 +128,25 @@ public class FacialTemplateService {
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(pictureBytes);
             image = ImageFactory.getInstance().fromInputStream(inputStream);
+            image = resizeIfNeeded(image);
         } catch (Exception e) {
             throw new FeatureVectorGenerationException("Erro ao gerar vetor de características a partir da foto.");
         }
 
         return image;
+    }
+
+    private Image resizeIfNeeded(Image image) {
+        int maxDimension = 800;
+
+        if (image.getWidth() <= maxDimension && image.getHeight() <= maxDimension) {
+            return image;
+        }
+
+        double scale = (double) maxDimension / Math.max(image.getWidth(), image.getHeight());
+        int newWidth = (int) (image.getWidth() * scale);
+        int newHeight = (int) (image.getHeight() * scale);
+
+        return image.resize(newWidth, newHeight, true);
     }
 }
