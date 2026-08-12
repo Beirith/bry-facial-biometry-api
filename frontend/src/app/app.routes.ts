@@ -6,7 +6,6 @@ import {UserDetails} from './presentation/users/user-details/user-details';
 import {Verify} from './presentation/biometry/verify/verify';
 import {Identify} from './presentation/biometry/identify/identify';
 import {UserBatchCreate} from './presentation/users/user-batch-create/user-batch-create';
-import {Home} from './presentation/home/home';
 import {UserBatchUpdate} from './presentation/users/user-batch-update/user-batch-update';
 
 export const routes: Routes = [
