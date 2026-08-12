@@ -4,7 +4,6 @@ import {FormBuilder, FormArray, FormGroup, Validators, ReactiveFormsModule} from
 import {Router} from '@angular/router';
 import {UserService} from '../../../data/services/user.service';
 import {BatchResult} from '../../../data/models/batch-result';
-import {NavigationService} from '../../../data/services/navigation.service';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -33,7 +32,6 @@ export class UserBatchCreate {
 
   constructor(
     private userService: UserService,
-    private navigationService: NavigationService,
     private router: Router
   ) {
   }
@@ -112,9 +110,5 @@ export class UserBatchCreate {
 
   isPictureMissing(index: number): boolean {
     return this.submitted() && this.selectedFiles[index] === null
-  }
-
-  goBack(): void {
-    this.navigationService.goBack();
   }
 }
