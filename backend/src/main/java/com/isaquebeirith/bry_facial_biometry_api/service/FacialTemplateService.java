@@ -68,7 +68,7 @@ public class FacialTemplateService {
         return FeatureVectorConverter.toByteArray(floatVector);
     }
 
-    public VerificationResponseDTO verifyFacialTemplate(String cpf, byte[] pictureBytes) {
+    public VerificationResponseDTO verifyFacialTemplate(String cpf, byte[] pictureBytes, Float customThreshold) {
         User user = userRepository.findByCpf(cpf).orElseThrow(
                 () -> new UserNotFoundException("Não há nenhum usuário cadastrado com o CPF " + cpf));
 
@@ -82,7 +82,9 @@ public class FacialTemplateService {
         float[] newVector = facialTemplateGenerator.generate(image);
 
         float similarity = facialTemplateComparator.calculateSimilarity(storedVector, newVector);
-        boolean matches = facialTemplateComparator.matches(similarity);
+        boolean matches = (customThreshold != null)
+                ? facialTemplateComparator.matches(similarity, customThreshold)
+                : facialTemplateComparator.matches(similarity);
 
         VerificationResponseDTO response = new VerificationResponseDTO();
         response.setMatches(matches);
@@ -91,7 +93,7 @@ public class FacialTemplateService {
         return response;
     }
 
-    public IdentificationResponseDTO identifyFacialTemplate(byte[] pictureBytes) {
+    public IdentificationResponseDTO identifyFacialTemplate(byte[] pictureBytes, Float customThreshold) {
         Image image = generateImage(pictureBytes);
 
         float[] newVector = facialTemplateGenerator.generate(image);
@@ -109,9 +111,13 @@ public class FacialTemplateService {
         float bestScore = bestMatch.map(BestMatch::score).orElse(0.0f);
         User bestUser = bestMatch.map(BestMatch::user).orElse(null);
 
+        boolean identified = (customThreshold != null)
+                ? facialTemplateComparator.matches(bestScore, customThreshold)
+                : facialTemplateComparator.matches(bestScore);
+
         IdentificationResponseDTO response = new IdentificationResponseDTO();
 
-        if (bestUser != null && facialTemplateComparator.matches(bestScore)) {
+        if (bestUser != null && identified) {
             response.setIdentified(true);
             response.setUser(UserResponseDTO.fromEntity(bestUser));
         } else {

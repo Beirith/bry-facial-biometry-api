@@ -10,4 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class IdentificationRequestDTO {
     @NotNull(message = "É obrigatório anexar uma foto para verificação.")
     private MultipartFile picture;
+
+    private Float threshold;
 }

@@ -8,11 +8,12 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {cpfFieldValidator} from '../../../shared/validator';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
+import {MatSliderModule} from '@angular/material/slider';
 
 @Component({
   selector: 'app-verify',
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSliderModule],
   templateUrl: './verify.html',
   styleUrl: './verify.css'
 })
@@ -22,6 +23,7 @@ export class Verify {
 
   verifyForm: FormGroup = this.fb.group({
     cpf: ['', [Validators.required, cpfFieldValidator()]],
+    threshold: [0.85],
   });
 
   selectedFile: File | null = null;
@@ -29,17 +31,16 @@ export class Verify {
   error = signal<string | null>(null);
   submitting = signal(false);
 
+  constructor(
+    private facialTemplateService: FacialTemplateService,
+    private navigationService: NavigationService) {
+  }
+
   ngOnInit(): void {
     const cpfFromQuery = this.route.snapshot.queryParamMap.get('cpf');
     if (cpfFromQuery) {
-      this.verifyForm.patchValue({ cpf: cpfFromQuery });
+      this.verifyForm.patchValue({cpf: cpfFromQuery});
     }
-  }
-
-  constructor
-  (private facialTemplateService: FacialTemplateService,
-   private navigationService: NavigationService
-  ) {
   }
 
   onPictureSelected(event: Event): void {
@@ -50,19 +51,19 @@ export class Verify {
   }
 
   onSubmit(): void {
-    if (this.verifyForm.invalid) {
-      this.error.set('Preencha todos os campos.');
-      return;
-    }
-
-    if (!this.selectedFile) {
-      this.error.set('Anexe uma foto.');
+    if (this.verifyForm.invalid || !this.selectedFile) {
+      this.error.set('Informe o CPF e selecione uma foto.');
       return;
     }
 
     const formData = new FormData();
     formData.append('cpf', this.verifyForm.value.cpf!);
     formData.append('picture', this.selectedFile);
+
+    const threshold = this.verifyForm.value.threshold;
+    if (threshold) {
+      formData.append('threshold', threshold);
+    }
 
     this.submitting.set(true);
     this.error.set(null);
@@ -74,7 +75,7 @@ export class Verify {
         this.submitting.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Erro ao realizar identificação.');
+        this.error.set(err.error?.message || 'Erro ao verificar identidade.');
         this.submitting.set(false);
       }
     });

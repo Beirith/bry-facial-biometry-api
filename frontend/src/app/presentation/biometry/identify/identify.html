@@ -9,6 +9,13 @@
     <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
   </div>
 
+  <div class="threshold-field">
+    <label>Threshold: {{ threshold | number:'1.2-2' }}</label>
+    <mat-slider min="0" max="1" step="0.01" discrete>
+      <input matSliderThumb [(ngModel)]="threshold" />
+    </mat-slider>
+  </div>
+
   <p *ngIf="error()">{{ error() }}</p>
 
   <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="submitting()">
@@ -27,6 +34,4 @@
       <p><strong>Melhor score encontrado:</strong> {{ result()!.score | number:'1.2-2' }}</p>
     </div>
   </div>
-
-  <button mat-button (click)="goBack()">← Voltar</button>
 </div>

@@ -4,15 +4,19 @@ import {FacialTemplateService} from '../../../data/services/facial-template.serv
 import {IdentificationResult} from '../../../data/models/identification-result';
 import {NavigationService} from '../../../data/services/navigation.service';
 import {MatButtonModule} from '@angular/material/button';
+import {MatSliderModule} from '@angular/material/slider';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-identify',
-  imports: [CommonModule, MatButtonModule],
+  imports: [CommonModule, MatButtonModule, MatSliderModule, FormsModule],
   templateUrl: './identify.html',
   styleUrl: './identify.css'
 })
 export class Identify {
   selectedFile: File | null = null;
+  threshold: number = 0.85;
+
   result = signal<IdentificationResult | null>(null);
   error = signal<string | null>(null);
   submitting = signal(false);
@@ -37,6 +41,7 @@ export class Identify {
 
     const formData = new FormData();
     formData.append('picture', this.selectedFile);
+    formData.append('threshold', this.threshold.toString());
 
     this.submitting.set(true);
     this.error.set(null);

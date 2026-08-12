@@ -14,4 +14,6 @@ public class VerificationRequestDTO {
 
     @NotNull(message = "É obrigatório anexar uma foto do usuário.")
     private MultipartFile picture;
+
+    private Float threshold;
 }

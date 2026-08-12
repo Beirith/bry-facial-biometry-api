@@ -25,4 +25,8 @@ public class FacialTemplateComparator {
     public boolean matches(float similarity) {
         return similarity >= threshold;
     }
+
+    public boolean matches(float similarity, float customThreshold) {
+        return similarity >= customThreshold;
+    }
 }

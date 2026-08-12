@@ -24,7 +24,9 @@ public class FacialTemplateController {
     public ResponseEntity<VerificationResponseDTO> verifyFacialTemplate(@Valid VerificationRequestDTO request) {
         byte[] pictureBytes = readPicture(request.getPicture());
 
-        VerificationResponseDTO response = facialTemplateService.verifyFacialTemplate(request.getCpf(), pictureBytes);
+        VerificationResponseDTO response = facialTemplateService.verifyFacialTemplate(
+                request.getCpf(), pictureBytes, request.getThreshold()
+        );
 
         return ResponseEntity.ok(response);
     }
@@ -33,7 +35,9 @@ public class FacialTemplateController {
     public ResponseEntity<IdentificationResponseDTO> identifyFacialTemplate(@Valid IdentificationRequestDTO request) {
         byte[] pictureBytes = readPicture(request.getPicture());
 
-        IdentificationResponseDTO response = facialTemplateService.identifyFacialTemplate(pictureBytes);
+        IdentificationResponseDTO response = facialTemplateService.identifyFacialTemplate(
+                pictureBytes, request.getThreshold()
+        );
 
         return ResponseEntity.ok(response);
     }
